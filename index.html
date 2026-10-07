@@ -2,32 +2,20 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="theme-color"
-        content="#070b10"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#070b10">
     <title>Hunter IA</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <!-- =====================================================
-         SPLASH / ABERTURA
+         SPLASH
          ===================================================== -->
 
-    <div
-        id="splash-screen"
-        class="screen splash-screen"
-    >
+    <div id="splash-screen" class="screen splash-screen">
+
         <div class="splash-content">
 
             <img
@@ -43,6 +31,7 @@
             </p>
 
         </div>
+
     </div>
 
 
@@ -50,14 +39,9 @@
          LOGIN
          ===================================================== -->
 
-    <section
-        id="login-screen"
-        class="screen login-screen hidden"
-    >
+    <section id="login-screen" class="screen login-screen hidden">
 
         <div class="login-container">
-
-            <!-- LADO DA MARCA -->
 
             <div class="login-brand">
 
@@ -80,8 +64,6 @@
             </div>
 
 
-            <!-- LOGIN -->
-
             <div class="login-card">
 
                 <img
@@ -98,6 +80,7 @@
                     Entre com seus dados para acessar
                     seu painel de vendas.
                 </p>
+
 
                 <form id="login-form">
 
@@ -140,6 +123,7 @@
                         Entrar no Hunter
                     </button>
 
+
                     <div
                         id="login-message"
                         class="login-message"
@@ -155,25 +139,17 @@
 
 
     <!-- =====================================================
-         APLICAÇÃO
+         APP
          ===================================================== -->
 
-    <div
-        id="app"
-        class="app hidden"
-    >
+    <div id="app" class="app hidden">
 
 
         <!-- =================================================
              SIDEBAR
              ================================================= -->
 
-        <aside
-            id="sidebar"
-            class="sidebar"
-        >
-
-            <!-- LOGO DA SIDEBAR -->
+        <aside id="sidebar" class="sidebar">
 
             <div class="sidebar-logo">
 
@@ -189,9 +165,10 @@
             </div>
 
 
-            <!-- NAVEGAÇÃO -->
-
             <nav class="nav-menu">
+
+
+                <!-- DASHBOARD -->
 
                 <a
                     href="#"
@@ -203,6 +180,8 @@
                 </a>
 
 
+                <!-- VENDEDOR -->
+
                 <a
                     href="#"
                     class="nav-item"
@@ -212,6 +191,20 @@
                     <span>Vendedor IA</span>
                 </a>
 
+
+                <!-- BUSCADOR DE LEADS -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                    data-page="leads"
+                >
+                    <span>⌕</span>
+                    <span>Buscador de Leads</span>
+                </a>
+
+
+                <!-- CALCULADORA -->
 
                 <a
                     href="#"
@@ -223,6 +216,8 @@
                 </a>
 
 
+                <!-- OFERTAS -->
+
                 <a
                     href="#"
                     class="nav-item"
@@ -232,6 +227,8 @@
                     <span>Gerador de Ofertas</span>
                 </a>
 
+
+                <!-- TREINADOR -->
 
                 <a
                     href="#"
@@ -243,6 +240,8 @@
                 </a>
 
 
+                <!-- PERFIL -->
+
                 <a
                     href="#"
                     class="nav-item"
@@ -252,13 +251,25 @@
                     <span>Meu Perfil</span>
                 </a>
 
+
+                <!-- CONFIGURAÇÕES -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                    data-page="configuracoes"
+                >
+                    <span>⚙</span>
+                    <span>Configurações</span>
+                </a>
+
             </nav>
 
         </aside>
 
 
         <!-- =================================================
-             OVERLAY MOBILE
+             MOBILE OVERLAY
              ================================================= -->
 
         <div
@@ -268,7 +279,7 @@
 
 
         <!-- =================================================
-             CONTEÚDO PRINCIPAL
+             MAIN
              ================================================= -->
 
         <main class="main-content">
@@ -290,6 +301,7 @@
                     >
                         ☰
                     </button>
+
 
                     <div
                         id="page-breadcrumb"
@@ -346,12 +358,10 @@
                 </div>
 
 
-                <!-- FERRAMENTAS -->
-
                 <div class="tools-grid">
 
 
-                    <!-- VENDEDOR IA -->
+                    <!-- VENDEDOR -->
 
                     <article
                         class="tool-card"
@@ -372,20 +382,72 @@
 
                         </div>
 
+
                         <h3>
                             Vendedor IA
                         </h3>
+
 
                         <p>
                             Crie estratégias para abordar clientes,
                             responder objeções e fechar vendas.
                         </p>
 
+
                         <button
                             type="button"
                             class="tool-button"
                         >
                             Abrir ferramenta →
+                        </button>
+
+                    </article>
+
+
+                    <!-- BUSCADOR DE LEADS -->
+
+                    <article
+                        class="tool-card"
+                        data-page="leads"
+                    >
+
+                        <div class="tool-card-top">
+
+                            <div
+                                class="tool-card-image"
+                                style="
+                                    display:flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    font-size:32px;
+                                "
+                            >
+                                🔎
+                            </div>
+
+                            <span class="tool-card-badge">
+                                NOVO
+                            </span>
+
+                        </div>
+
+
+                        <h3>
+                            Buscador de Leads
+                        </h3>
+
+
+                        <p>
+                            Encontre empresas e potenciais clientes
+                            por cidade, país e nicho.
+                        </p>
+
+
+                        <button
+                            type="button"
+                            class="tool-button"
+                        >
+                            Encontrar clientes →
                         </button>
 
                     </article>
@@ -408,14 +470,17 @@
 
                         </div>
 
+
                         <h3>
                             Calculadora de Preços
                         </h3>
+
 
                         <p>
                             Descubra quanto cobrar pelos seus
                             serviços de forma rápida e estratégica.
                         </p>
+
 
                         <button
                             type="button"
@@ -427,7 +492,7 @@
                     </article>
 
 
-                    <!-- GERADOR DE OFERTAS -->
+                    <!-- OFERTAS -->
 
                     <article
                         class="tool-card"
@@ -444,14 +509,17 @@
 
                         </div>
 
+
                         <h3>
                             Gerador de Ofertas
                         </h3>
+
 
                         <p>
                             Transforme seu serviço em uma oferta
                             mais clara, atrativa e focada em conversão.
                         </p>
+
 
                         <button
                             type="button"
@@ -480,14 +548,17 @@
 
                         </div>
 
+
                         <h3>
                             Treinador de Vendas
                         </h3>
+
 
                         <p>
                             Simule conversas com clientes e descubra
                             como melhorar sua abordagem.
                         </p>
+
 
                         <button
                             type="button"
@@ -497,7 +568,6 @@
                         </button>
 
                     </article>
-
 
                 </div>
 
@@ -524,6 +594,7 @@
 
                     </div>
 
+
                     <div>
 
                         <h1>
@@ -541,6 +612,164 @@
 
 
                 <div id="vendedor-content"></div>
+
+            </section>
+
+
+            <!-- =================================================
+                 BUSCADOR DE LEADS
+                 ================================================= -->
+
+            <section
+                id="page-leads"
+                class="page hidden-page"
+            >
+
+                <div class="tool-page-header">
+
+                    <div
+                        class="tool-page-icon"
+                        style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:28px;
+                        "
+                    >
+                        🔎
+                    </div>
+
+
+                    <div>
+
+                        <h1>
+                            Buscador de Leads
+                        </h1>
+
+                        <p>
+                            Encontre clientes por cidade,
+                            país e nicho.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ÁREA DO BUSCADOR -->
+
+                <div
+                    id="leads-content"
+                    class="tool-content"
+                >
+
+                    <div class="tool-panel">
+
+                        <div class="tool-panel-header">
+
+                            <h2>
+                                Encontrar novos clientes
+                            </h2>
+
+                            <p>
+                                Informe onde e qual tipo de empresa
+                                você deseja prospectar.
+                            </p>
+
+                        </div>
+
+
+                        <form id="leads-search-form">
+
+
+                            <!-- PAÍS -->
+
+                            <div class="form-group">
+
+                                <label for="lead-country">
+                                    País
+                                </label>
+
+                                <select id="lead-country">
+
+                                    <option value="BR">
+                                        🇧🇷 Brasil
+                                    </option>
+
+                                    <option value="US">
+                                        🇺🇸 Estados Unidos
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- CIDADE -->
+
+                            <div class="form-group">
+
+                                <label for="lead-city">
+                                    Cidade
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="lead-city"
+                                    placeholder="Ex: Boston, São Paulo, Miami..."
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+
+                            <!-- NICHO -->
+
+                            <div class="form-group">
+
+                                <label for="lead-niche">
+                                    Nicho
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="lead-niche"
+                                    placeholder="Ex: dentistas, restaurantes, academias..."
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                id="search-leads-button"
+                                class="primary-button"
+                            >
+                                🔎 Buscar Leads
+                            </button>
+
+
+                            <div
+                                id="leads-search-message"
+                                class="login-message"
+                            ></div>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- RESULTADOS -->
+
+                    <div
+                        id="leads-results"
+                        class="leads-results"
+                    >
+
+                    </div>
+
+                </div>
 
             </section>
 
@@ -565,6 +794,7 @@
 
                     </div>
 
+
                     <div>
 
                         <h1>
@@ -587,7 +817,7 @@
 
 
             <!-- =================================================
-                 GERADOR DE OFERTAS
+                 OFERTAS
                  ================================================= -->
 
             <section
@@ -605,6 +835,7 @@
                         >
 
                     </div>
+
 
                     <div>
 
@@ -646,6 +877,7 @@
                         >
 
                     </div>
+
 
                     <div>
 
@@ -701,6 +933,7 @@
                         >
                             V
                         </div>
+
 
                         <div>
 
@@ -784,6 +1017,253 @@
             </section>
 
 
+            <!-- =================================================
+                 CONFIGURAÇÕES
+                 ================================================= -->
+
+            <section
+                id="page-configuracoes"
+                class="page hidden-page"
+            >
+
+                <div class="tool-page-header">
+
+                    <div
+                        class="tool-page-icon"
+                        style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:26px;
+                        "
+                    >
+                        ⚙
+                    </div>
+
+
+                    <div>
+
+                        <h1>
+                            Configurações
+                        </h1>
+
+                        <p>
+                            Configure as integrações utilizadas
+                            pelo Hunter IA.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GOOGLE PLACES -->
+
+                <div class="profile-card">
+
+                    <div class="profile-header">
+
+                        <div class="large-avatar">
+                            G
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Google Places
+                            </h2>
+
+                            <p>
+                                Conexão utilizada pelo
+                                Buscador de Leads.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form id="api-settings-form">
+
+
+                        <div class="form-group">
+
+                            <label for="google-api-key">
+                                Chave da API
+                            </label>
+
+
+                            <div
+                                style="
+                                    position:relative;
+                                    display:flex;
+                                    align-items:center;
+                                "
+                            >
+
+                                <input
+                                    type="password"
+                                    id="google-api-key"
+                                    placeholder="Cole sua chave da API aqui"
+                                    autocomplete="off"
+                                    style="
+                                        width:100%;
+                                        padding-right:48px;
+                                    "
+                                >
+
+
+                                <button
+                                    type="button"
+                                    id="toggle-api-key"
+                                    aria-label="Mostrar ou esconder chave"
+                                    style="
+                                        position:absolute;
+                                        right:8px;
+                                        border:none;
+                                        background:transparent;
+                                        color:#9aa6b2;
+                                        cursor:pointer;
+                                        font-size:18px;
+                                        padding:8px;
+                                    "
+                                >
+                                    👁
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <p
+                            style="
+                                font-size:13px;
+                                color:#8b98a8;
+                                line-height:1.6;
+                                margin-bottom:18px;
+                            "
+                        >
+                            A chave ficará escondida visualmente.
+                            A validação será feita pelo sistema antes
+                            de confirmar a conexão.
+                        </p>
+
+
+                        <button
+                            type="button"
+                            id="test-api-key"
+                            class="primary-button"
+                        >
+                            🔐 Testar chave API
+                        </button>
+
+
+                        <div
+                            id="api-status"
+                            class="profile-message"
+                            style="margin-top:15px;"
+                        ></div>
+
+
+                        <div
+                            id="api-connected"
+                            style="
+                                display:none;
+                                margin-top:18px;
+                                padding:15px;
+                                border-radius:12px;
+                                background:rgba(46,204,113,0.08);
+                                border:1px solid rgba(46,204,113,0.25);
+                            "
+                        >
+
+                            <strong
+                                style="color:#2ecc71;"
+                            >
+                                🟢 Chave API funcionando
+                            </strong>
+
+                            <p
+                                style="
+                                    margin:6px 0 0;
+                                    color:#9aa6b2;
+                                    font-size:13px;
+                                "
+                            >
+                                Google Places conectado
+                                e pronto para o Buscador de Leads.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                            style="
+                                margin-top:15px;
+                                display:none;
+                            "
+                            id="save-api-key"
+                        >
+                            💾 Salvar configuração
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- SEGURANÇA -->
+
+                <div
+                    class="profile-card"
+                    style="margin-top:20px;"
+                >
+
+                    <div class="profile-header">
+
+                        <div class="large-avatar">
+                            🔒
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Segurança
+                            </h2>
+
+                            <p>
+                                Proteção das integrações
+                                do Hunter IA.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <p
+                        style="
+                            color:#9aa6b2;
+                            font-size:14px;
+                            line-height:1.7;
+                        "
+                    >
+                        Nunca compartilhe sua chave API.
+                        Na versão final, a chave utilizada pelo
+                        Google Places deverá ser protegida no
+                        servidor/backend e não exposta no código
+                        público do GitHub.
+                    </p>
+
+                </div>
+
+            </section>
+
         </main>
 
     </div>
@@ -794,13 +1274,26 @@
          ===================================================== -->
 
     <script src="js/app.js"></script>
+
     <script src="js/login.js"></script>
+
     <script src="js/dashboard.js"></script>
+
     <script src="js/perfil.js"></script>
+
     <script src="js/vendedor.js"></script>
+
     <script src="js/calculadora.js"></script>
+
     <script src="js/ofertas.js"></script>
+
     <script src="js/treinador.js"></script>
+
+    <!-- NOVOS MÓDULOS -->
+
+    <script src="js/leads.js"></script>
+
+    <script src="js/configuracoes.js"></script>
 
 </body>
 </html>

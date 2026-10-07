@@ -1683,3 +1683,131 @@ input:-webkit-autofill:focus {
         transition-duration: 0.01ms !important;
     }
 }
+/* =========================================================
+   CORREÇÕES DE LAYOUT — HUNTER IA
+   ========================================================= */
+
+/* Fundo geral de todas as páginas */
+html,
+body,
+.app,
+.main-content,
+.page {
+    background-color: #070b10;
+}
+
+/* Evita qualquer fundo branco nas páginas */
+.page {
+    min-height: calc(100vh - 80px);
+    color: var(--text);
+}
+
+/* Sidebar sempre escura */
+.sidebar {
+    background: #080d13 !important;
+}
+
+/* Logo da sidebar — pequena e controlada */
+.sidebar-logo {
+    height: 58px;
+    overflow: hidden;
+}
+
+.sidebar-logo img {
+    width: 38px !important;
+    height: 38px !important;
+
+    min-width: 38px;
+    min-height: 38px;
+
+    max-width: 38px;
+    max-height: 38px;
+
+    object-fit: contain;
+
+    border-radius: 9px;
+}
+
+/* Nome Hunter IA da sidebar */
+.sidebar-logo span {
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+/* Área principal nunca fica branca */
+.main-content {
+    background: #070b10;
+}
+
+/* Painéis das ferramentas */
+.tool-panel {
+    background: #0e151e !important;
+}
+
+/* Área de resultado */
+.ai-result,
+.training-area {
+    background: #0a1119 !important;
+}
+
+/* =========================================================
+   LOGOS/ÍCONES DAS FERRAMENTAS
+   ========================================================= */
+
+/*
+   Caso alguma imagem esteja aparecendo gigante,
+   limitamos qualquer imagem dentro dos painéis.
+*/
+
+.tool-panel img {
+    max-width: 80px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* =========================================================
+   NAVEGAÇÃO
+   ========================================================= */
+
+.nav-menu,
+.nav-item {
+    background-color: transparent;
+}
+
+.nav-item {
+    color: #8996a5;
+}
+
+.nav-item:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.nav-item.active {
+    color: #ffffff;
+    background: rgba(47, 128, 237, 0.11);
+}
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.topbar {
+    background: #070b10;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+    .sidebar {
+        background: #080d13 !important;
+    }
+
+    .main-content {
+        background: #070b10;
+    }
+}

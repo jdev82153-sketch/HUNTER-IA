@@ -2036,3 +2036,159 @@ select option {
         scroll-behavior: auto !important;
     }
 }
+/* =========================================================
+   CORREÇÃO DEFINITIVA — DESKTOP + MOBILE
+   ========================================================= */
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #070b10 !important;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* APP NUNCA DEVE FICAR COM FUNDO BRANCO */
+#app {
+    width: 100%;
+    min-height: 100vh;
+    background: #070b10 !important;
+}
+
+/* SPLASH OCUPA EXATAMENTE A JANELA */
+#splash-screen {
+    position: fixed !important;
+    inset: 0 !important;
+
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+
+    z-index: 99999 !important;
+
+    background: #05080c !important;
+}
+
+/* LOGIN */
+#login-screen {
+    width: 100%;
+    min-height: 100vh;
+
+    background: #070b10 !important;
+}
+
+/* ÁREA PRINCIPAL */
+.main-content {
+    min-height: 100vh !important;
+
+    background: #070b10 !important;
+}
+
+/* PÁGINAS */
+.page {
+    width: 100%;
+
+    min-height: calc(100vh - 78px);
+
+    background: transparent !important;
+}
+
+/* EVITA O CONTEÚDO FICAR ESCONDIDO */
+#page-dashboard.active-page,
+#page-vendedor.active-page,
+#page-calculadora.active-page,
+#page-ofertas.active-page,
+#page-treinador.active-page,
+#page-perfil.active-page {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* LOGO DO SPLASH */
+.splash-logo {
+    width: 190px !important;
+    height: 190px !important;
+
+    max-width: 190px !important;
+    max-height: 190px !important;
+
+    object-fit: contain !important;
+}
+
+/* LOGOS DAS FERRAMENTAS */
+.tool-page-icon {
+    width: 56px !important;
+    height: 56px !important;
+
+    min-width: 56px !important;
+    min-height: 56px !important;
+
+    max-width: 56px !important;
+    max-height: 56px !important;
+
+    overflow: hidden !important;
+}
+
+.tool-page-icon img {
+    width: 40px !important;
+    height: 40px !important;
+
+    min-width: 40px !important;
+    min-height: 40px !important;
+
+    max-width: 40px !important;
+    max-height: 40px !important;
+
+    object-fit: contain !important;
+}
+
+/* SIDEBAR */
+.sidebar {
+    background: #080d13 !important;
+}
+
+/* GARANTE QUE O CONTEÚDO DESKTOP FIQUE VISÍVEL */
+@media (min-width: 761px) {
+
+    .main-content {
+        display: block !important;
+        visibility: visible !important;
+    }
+
+    .page {
+        position: relative;
+    }
+
+    .topbar {
+        position: relative;
+        z-index: 10;
+    }
+
+}
+
+/* MOBILE */
+@media (max-width: 760px) {
+
+    #app {
+        min-height: 100vh;
+    }
+
+    .main-content {
+        min-height: 100vh !important;
+    }
+
+    .page {
+        min-height: calc(100vh - 70px);
+    }
+
+    .splash-logo {
+        width: 160px !important;
+        height: 160px !important;
+    }
+}

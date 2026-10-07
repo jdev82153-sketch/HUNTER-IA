@@ -1,216 +1,223 @@
 /* =========================================================
-   HUNTER IA
-   APP.JS
+   HUNTER IA — APP.JS
+   Navegação + Menu Mobile
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* =====================================================
-       ELEMENTOS PRINCIPAIS
-    ====================================================== */
-
-    const splashScreen = document.getElementById("splash-screen");
+    const splash = document.getElementById("splash-screen");
     const loginScreen = document.getElementById("login-screen");
     const app = document.getElementById("app");
 
     const sidebar = document.getElementById("sidebar");
-    const sidebarOpen = document.getElementById("sidebar-open");
-    const sidebarClose = document.getElementById("sidebar-close");
-    const sidebarOverlay = document.getElementById("sidebar-overlay");
+    const overlay = document.getElementById("sidebar-overlay");
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
 
-    const navItems = document.querySelectorAll(".nav-item");
-    const pageButtons = document.querySelectorAll("[data-page]");
-
-    const pageBreadcrumb = document.getElementById("page-breadcrumb");
-
+    const navItems = document.querySelectorAll("[data-page]");
 
     /* =====================================================
-       CONFIGURAÇÃO
-    ====================================================== */
+       SPLASH
+       ===================================================== */
 
-    const SPLASH_TIME = 1800;
+    setTimeout(() => {
 
-    const pageNames = {
-        dashboard: "Dashboard",
-        vendedor: "Vendedor IA",
-        calculadora: "Calculador de Preços",
-        ofertas: "Gerador de Ofertas",
-        treinador: "Treinador de Vendas",
-        perfil: "Meu Perfil"
-    };
-
-
-    /* =====================================================
-       INICIALIZAÇÃO
-    ====================================================== */
-
-    initializeApp();
-
-
-    function initializeApp() {
-
-        startSplash();
-
-        setupNavigation();
-
-        setupMobileSidebar();
-
-        setupToolCards();
-
-        loadUserData();
-
-    }
-
-
-    /* =====================================================
-       SPLASH SCREEN
-    ====================================================== */
-
-    function startSplash() {
-
-        if (!splashScreen) {
-            showLogin();
-            return;
-        }
-
-        setTimeout(() => {
-
-            splashScreen.style.opacity = "0";
-
-            splashScreen.style.pointerEvents = "none";
+        if (splash) {
+            splash.classList.add("fade-out");
 
             setTimeout(() => {
-
-                splashScreen.classList.add("hidden");
-
-                const loggedIn =
-                    localStorage.getItem("hunter_logged_in") === "true";
-
-                if (loggedIn) {
-                    showApp();
-                } else {
-                    showLogin();
-                }
-
-            }, 450);
-
-        }, SPLASH_TIME);
-
-    }
-
-
-    /* =====================================================
-       LOGIN
-    ====================================================== */
-
-    function showLogin() {
-
-        if (splashScreen) {
-            splashScreen.classList.add("hidden");
+                splash.style.display = "none";
+            }, 500);
         }
 
-        if (app) {
-            app.classList.add("hidden");
+        const loggedIn =
+            localStorage.getItem("hunter_logged_in") === "true";
+
+        if (loggedIn) {
+
+            if (loginScreen) {
+                loginScreen.classList.add("hidden");
+            }
+
+            if (app) {
+                app.classList.remove("hidden");
+            }
+
+            loadUser();
+
+            navigateTo("dashboard");
+
+        } else {
+
+            if (app) {
+                app.classList.add("hidden");
+            }
+
+            if (loginScreen) {
+                loginScreen.classList.remove("hidden");
+            }
         }
 
-        if (loginScreen) {
-            loginScreen.classList.remove("hidden");
-        }
-
-    }
-
-
-    /* =====================================================
-       APP
-    ====================================================== */
-
-    function showApp() {
-
-        if (loginScreen) {
-            loginScreen.classList.add("hidden");
-        }
-
-        if (app) {
-            app.classList.remove("hidden");
-        }
-
-        loadUserData();
-
-        navigateTo("dashboard");
-
-    }
+    }, 1800);
 
 
     /* =====================================================
        NAVEGAÇÃO
-    ====================================================== */
+       ===================================================== */
 
-    function setupNavigation() {
+    navItems.forEach(item => {
 
-        pageButtons.forEach(button => {
+        item.addEventListener("click", event => {
 
-            button.addEventListener("click", () => {
+            event.preventDefault();
 
-                const page =
-                    button.dataset.page;
+            const page = item.dataset.page;
 
-                if (!page) {
-                    return;
-                }
+            if (!page) return;
 
-                navigateTo(page);
+            navigateTo(page);
 
-            });
+            closeMobileMenu();
+        });
+    });
 
+
+    /* =====================================================
+       CARDS DO DASHBOARD
+       ===================================================== */
+
+    document.querySelectorAll(".tool-card").forEach(card => {
+
+        card.addEventListener("click", () => {
+
+            const page = card.dataset.page;
+
+            if (!page) return;
+
+            navigateTo(page);
+        });
+
+    });
+
+
+    /* =====================================================
+       BOTÃO DO MENU MOBILE
+       ===================================================== */
+
+    if (mobileMenuButton) {
+
+        mobileMenuButton.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            toggleMobileMenu();
         });
 
     }
 
 
-    function navigateTo(pageName) {
+    /* =====================================================
+       OVERLAY
+       ===================================================== */
 
-        if (!pageNames[pageName]) {
-            pageName = "dashboard";
+    if (overlay) {
+
+        overlay.addEventListener("click", () => {
+            closeMobileMenu();
+        });
+
+    }
+
+
+    /* =====================================================
+       FECHAR COM ESC
+       ===================================================== */
+
+    document.addEventListener("keydown", event => {
+
+        if (event.key === "Escape") {
+            closeMobileMenu();
         }
 
+    });
 
-        /* ---------------------------------------------
-           Esconde todas as páginas
-        ---------------------------------------------- */
 
-        const pages =
-            document.querySelectorAll(".page");
+    /* =====================================================
+       MENU MOBILE
+       ===================================================== */
+
+    function openMobileMenu() {
+
+        if (!sidebar) return;
+
+        sidebar.classList.add("mobile-open");
+
+        if (overlay) {
+            overlay.classList.add("visible");
+        }
+
+        document.body.style.overflow = "hidden";
+    }
+
+
+    function closeMobileMenu() {
+
+        if (!sidebar) return;
+
+        sidebar.classList.remove("mobile-open");
+
+        if (overlay) {
+            overlay.classList.remove("visible");
+        }
+
+        document.body.style.overflow = "";
+    }
+
+
+    function toggleMobileMenu() {
+
+        if (!sidebar) return;
+
+        const isOpen =
+            sidebar.classList.contains("mobile-open");
+
+        if (isOpen) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+    }
+
+
+    /* =====================================================
+       NAVEGAR ENTRE PÁGINAS
+       ===================================================== */
+
+    function navigateTo(pageName) {
+
+        const pages = document.querySelectorAll(".page");
 
         pages.forEach(page => {
 
             page.classList.remove("active-page");
-
             page.classList.add("hidden-page");
 
         });
 
 
-        /* ---------------------------------------------
-           Mostra a página selecionada
-        ---------------------------------------------- */
-
-        const selectedPage =
+        const targetPage =
             document.getElementById(`page-${pageName}`);
 
-        if (selectedPage) {
-
-            selectedPage.classList.remove("hidden-page");
-
-            selectedPage.classList.add("active-page");
-
-        }
+        if (!targetPage) return;
 
 
-        /* ---------------------------------------------
-           Atualiza menu lateral
-        ---------------------------------------------- */
+        targetPage.classList.remove("hidden-page");
+        targetPage.classList.add("active-page");
 
-        navItems.forEach(item => {
+
+        /* Atualiza menu */
+
+        document.querySelectorAll(".nav-item").forEach(item => {
 
             item.classList.remove("active");
 
@@ -221,290 +228,151 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
-        /* ---------------------------------------------
-           Atualiza breadcrumb
-        ---------------------------------------------- */
+        /* Breadcrumb */
 
-        if (pageBreadcrumb) {
+        const breadcrumb =
+            document.getElementById("page-breadcrumb");
 
-            pageBreadcrumb.textContent =
-                pageNames[pageName];
+        if (breadcrumb) {
 
+            const names = {
+                dashboard: "Dashboard",
+                vendedor: "Vendedor IA",
+                calculadora: "Calculadora de Preços",
+                ofertas: "Gerador de Ofertas",
+                treinador: "Treinador de Vendas",
+                perfil: "Meu Perfil"
+            };
+
+            breadcrumb.textContent =
+                names[pageName] || "Hunter IA";
         }
 
-
-        /* ---------------------------------------------
-           Fecha menu no celular
-        ---------------------------------------------- */
-
-        closeMobileSidebar();
-
-
-        /* ---------------------------------------------
-           Volta para o topo
-        ---------------------------------------------- */
 
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
-
     }
 
 
     /* =====================================================
-       CARDS DAS FERRAMENTAS
-    ====================================================== */
+       USUÁRIO
+       ===================================================== */
 
-    function setupToolCards() {
+    function loadUser() {
 
-        const cards =
-            document.querySelectorAll(".tool-card");
-
-        cards.forEach(card => {
-
-            card.addEventListener("click", event => {
-
-                /*
-                 Evita que o clique no botão
-                 seja executado duas vezes.
-                */
-
-                if (
-                    event.target.closest(".tool-button")
-                ) {
-                    return;
-                }
-
-                const page =
-                    card.dataset.page;
-
-                if (page) {
-                    navigateTo(page);
-                }
-
-            });
-
-        });
-
-    }
-
-
-    /* =====================================================
-       SIDEBAR MOBILE
-    ====================================================== */
-
-    function setupMobileSidebar() {
-
-        if (sidebarOpen) {
-
-            sidebarOpen.addEventListener(
-                "click",
-                openMobileSidebar
-            );
-
-        }
-
-
-        if (sidebarClose) {
-
-            sidebarClose.addEventListener(
-                "click",
-                closeMobileSidebar
-            );
-
-        }
-
-
-        if (sidebarOverlay) {
-
-            sidebarOverlay.addEventListener(
-                "click",
-                closeMobileSidebar
-            );
-
-        }
-
-    }
-
-
-    function openMobileSidebar() {
-
-        if (!sidebar) {
-            return;
-        }
-
-        sidebar.classList.add("mobile-open");
-
-        if (sidebarOverlay) {
-            sidebarOverlay.classList.add("active");
-        }
-
-        document.body.style.overflow = "hidden";
-
-    }
-
-
-    function closeMobileSidebar() {
-
-        if (sidebar) {
-            sidebar.classList.remove("mobile-open");
-        }
-
-        if (sidebarOverlay) {
-            sidebarOverlay.classList.remove("active");
-        }
-
-        document.body.style.overflow = "";
-
-    }
-
-
-    /* =====================================================
-       DADOS DO USUÁRIO
-    ====================================================== */
-
-    function loadUserData() {
-
-        const savedUser =
-            localStorage.getItem("hunter_user");
-
-        if (!savedUser) {
-            return;
-        }
+        let user = {};
 
         try {
 
-            const user =
-                JSON.parse(savedUser);
-
-            updateUserInterface(user);
+            user =
+                JSON.parse(
+                    localStorage.getItem("hunter_user")
+                ) || {};
 
         } catch (error) {
 
-            console.warn(
-                "Não foi possível carregar os dados do usuário."
-            );
-
+            user = {};
         }
 
-    }
-
-
-    function updateUserInterface(user) {
-
-        if (!user) {
-            return;
-        }
 
         const name =
-            user.name || "Usuário";
+            user.name ||
+            "Vendedor";
+
+
+        /* Dashboard */
 
         const dashboardName =
-            document.getElementById(
-                "dashboard-user-name"
-            );
-
-        const topbarName =
-            document.getElementById(
-                "topbar-user-name"
-            );
-
-        const profileName =
-            document.getElementById(
-                "profile-display-name"
-            );
-
-        const profileInput =
-            document.getElementById(
-                "profile-name"
-            );
-
-        const avatar =
-            document.getElementById(
-                "profile-avatar"
-            );
-
-        const largeAvatar =
-            document.getElementById(
-                "profile-large-avatar"
-            );
-
+            document.getElementById("dashboard-user-name");
 
         if (dashboardName) {
-            dashboardName.textContent = name;
+            dashboardName.textContent =
+                `Olá, ${name}`;
         }
+
+
+        /* Topbar */
+
+        const topbarName =
+            document.getElementById("topbar-user-name");
 
         if (topbarName) {
             topbarName.textContent = name;
         }
 
-        if (profileName) {
-            profileName.textContent = name;
-        }
 
-        if (profileInput) {
-            profileInput.value = name;
-        }
+        /* Avatar */
+
+        const initial =
+            name
+                .trim()
+                .charAt(0)
+                .toUpperCase() || "V";
 
 
-        const firstLetter =
-            name.trim().charAt(0).toUpperCase() || "U";
+        const avatar =
+            document.getElementById("profile-avatar");
 
         if (avatar) {
-            avatar.textContent = firstLetter;
+            avatar.textContent = initial;
         }
+
+
+        const largeAvatar =
+            document.getElementById("profile-large-avatar");
 
         if (largeAvatar) {
-            largeAvatar.textContent = firstLetter;
+            largeAvatar.textContent = initial;
         }
 
 
-        const roleInput =
-            document.getElementById("profile-role");
+        const profileDisplay =
+            document.getElementById("profile-display-name");
 
-        const descriptionInput =
-            document.getElementById(
-                "profile-description"
-            );
-
-
-        if (roleInput && user.role) {
-            roleInput.value = user.role;
+        if (profileDisplay) {
+            profileDisplay.textContent = name;
         }
 
-        if (
-            descriptionInput &&
-            user.description
-        ) {
-            descriptionInput.value =
-                user.description;
-        }
 
+        const profileName =
+            document.getElementById("profile-name");
+
+        if (profileName && !profileName.value) {
+            profileName.value = name;
+        }
     }
 
 
     /* =====================================================
-       FUNÇÕES GLOBAIS
-       Outros arquivos podem usar estas funções.
-    ====================================================== */
+       EXPOR PARA OUTROS ARQUIVOS
+       ===================================================== */
 
     window.HunterApp = {
 
         navigateTo,
 
-        showApp,
+        showApp: () => {
 
-        showLogin,
+            if (loginScreen) {
+                loginScreen.classList.add("hidden");
+            }
 
-        loadUserData,
+            if (app) {
+                app.classList.remove("hidden");
+            }
 
-        updateUserInterface,
+            loadUser();
 
-        openMobileSidebar,
+            navigateTo("dashboard");
+        },
 
-        closeMobileSidebar
+        loadUser,
 
+        openMobileMenu,
+
+        closeMobileMenu
     };
 
 });

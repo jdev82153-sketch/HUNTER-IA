@@ -20,15 +20,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const message =
         document.getElementById("profile-message");
 
-    const profileAvatar =
+    const largeAvatar =
         document.getElementById("profile-large-avatar");
+
+    const smallAvatar =
+        document.getElementById("profile-avatar");
+
+    const topbarAvatar =
+        document.getElementById("topbar-mini-avatar");
 
 
     if (!nameInput) return;
 
 
     /* =====================================================
-       CARREGAR PERFIL
+       INICIAR
        ===================================================== */
 
     carregarPerfil();
@@ -69,12 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     event.target.result,
                     imagem => {
 
-                        aplicarFoto(imagem);
-
                         localStorage.setItem(
                             "hunter_profile_photo",
                             imagem
                         );
+
+                        aplicarFoto(imagem);
 
                         mostrarMensagem(
                             "Foto atualizada com sucesso!"
@@ -99,26 +105,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (saveButton) {
 
-        saveButton.addEventListener("click", salvarPerfil);
+        saveButton.addEventListener(
+            "click",
+            salvarPerfil
+        );
 
     }
 
 
     /* =====================================================
-       ENTER NO NOME
+       ENTER NO CAMPO
        ===================================================== */
 
-    nameInput.addEventListener("keydown", event => {
+    nameInput.addEventListener(
+        "keydown",
+        event => {
 
-        if (event.key === "Enter") {
+            if (event.key === "Enter") {
 
-            event.preventDefault();
+                event.preventDefault();
 
-            salvarPerfil();
+                salvarPerfil();
+
+            }
 
         }
-
-    });
+    );
 
 
     /* =====================================================
@@ -127,23 +139,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (removePhotoButton) {
 
-        removePhotoButton.addEventListener("click", () => {
+        removePhotoButton.addEventListener(
+            "click",
+            () => {
 
-            localStorage.removeItem(
-                "hunter_profile_photo"
-            );
+                localStorage.removeItem(
+                    "hunter_profile_photo"
+                );
 
-            aplicarFoto(null);
+                if (photoInput) {
+                    photoInput.value = "";
+                }
 
-            if (photoInput) {
-                photoInput.value = "";
+                aplicarFoto(null);
+
+                mostrarMensagem(
+                    "Foto removida."
+                );
+
             }
-
-            mostrarMensagem(
-                "Foto removida."
-            );
-
-        });
+        );
 
     }
 
@@ -200,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-         * Atualiza o restante do sistema
+         * Atualiza o sistema inteiro
          */
 
         if (
@@ -211,6 +226,20 @@ document.addEventListener("DOMContentLoaded", () => {
             window.HunterApp.loadUser();
 
         }
+
+
+        /*
+         * Reaplica a foto depois do loadUser.
+         * Isso evita que o avatar volte para a inicial.
+         */
+
+        const photo =
+            localStorage.getItem(
+                "hunter_profile_photo"
+            );
+
+
+        aplicarFoto(photo);
 
 
         mostrarMensagem(
@@ -258,11 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-        if (photo) {
-
-            aplicarFoto(photo);
-
-        }
+        aplicarFoto(photo);
 
     }
 
@@ -273,135 +298,158 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function aplicarFoto(photo) {
 
-        if (!profileAvatar) return;
-
-
         if (photo) {
 
-            profileAvatar.style.backgroundImage =
-                `url("${photo}")`;
-
-            profileAvatar.classList.add(
-                "has-photo"
+            aplicarImagem(
+                largeAvatar,
+                photo
             );
 
-            profileAvatar.textContent = "";
+            aplicarImagem(
+                smallAvatar,
+                photo
+            );
+
+            aplicarImagem(
+                topbarAvatar,
+                photo
+            );
 
         } else {
 
-            profileAvatar.style.backgroundImage =
-                "";
-
-            profileAvatar.classList.remove(
-                "has-photo"
+            removerImagem(
+                largeAvatar
             );
 
+            removerImagem(
+                smallAvatar
+            );
 
-            let user = {};
-
-            try {
-
-                user =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "hunter_user"
-                        )
-                    ) || {};
-
-            } catch (error) {
-
-                user = {};
-
-            }
-
-
-            const name =
-                user.name ||
-                "Vendedor";
-
-
-            profileAvatar.textContent =
-                name
-                    .trim()
-                    .charAt(0)
-                    .toUpperCase() || "V";
+            removerImagem(
+                topbarAvatar
+            );
 
         }
 
 
-        /*
-         * Atualiza também os outros avatares
-         */
+        atualizarIniciais();
+    }
 
-        atualizarAvatarPrincipal(photo);
+
+    /* =====================================================
+       APLICAR IMAGEM
+       ===================================================== */
+
+    function aplicarImagem(
+        elemento,
+        photo
+    ) {
+
+        if (!elemento) return;
+
+
+        elemento.style.backgroundImage =
+            `url("${photo}")`;
+
+
+        elemento.classList.add(
+            "has-photo"
+        );
+
+
+        elemento.textContent = "";
 
     }
 
 
     /* =====================================================
-       ATUALIZAR AVATAR DO SISTEMA
+       REMOVER IMAGEM
        ===================================================== */
 
-    function atualizarAvatarPrincipal(photo) {
+    function removerImagem(
+        elemento
+    ) {
 
-        const avatar =
-            document.getElementById(
-                "profile-avatar"
+        if (!elemento) return;
+
+
+        elemento.style.backgroundImage =
+            "";
+
+
+        elemento.classList.remove(
+            "has-photo"
+        );
+
+    }
+
+
+    /* =====================================================
+       ATUALIZAR INICIAIS
+       ===================================================== */
+
+    function atualizarIniciais() {
+
+        let user = {};
+
+        try {
+
+            user =
+                JSON.parse(
+                    localStorage.getItem(
+                        "hunter_user"
+                    )
+                ) || {};
+
+        } catch (error) {
+
+            user = {};
+
+        }
+
+
+        const name =
+            user.name ||
+            "Vendedor";
+
+
+        const initial =
+            name
+                .trim()
+                .charAt(0)
+                .toUpperCase() || "V";
+
+
+        const photo =
+            localStorage.getItem(
+                "hunter_profile_photo"
             );
 
 
-        if (!avatar) return;
+        if (!photo) {
 
+            if (largeAvatar) {
 
-        if (photo) {
-
-            avatar.style.backgroundImage =
-                `url("${photo}")`;
-
-            avatar.classList.add(
-                "has-photo"
-            );
-
-            avatar.textContent = "";
-
-        } else {
-
-            avatar.style.backgroundImage =
-                "";
-
-            avatar.classList.remove(
-                "has-photo"
-            );
-
-
-            let user = {};
-
-            try {
-
-                user =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "hunter_user"
-                        )
-                    ) || {};
-
-            } catch (error) {
-
-                user = {};
+                largeAvatar.textContent =
+                    initial;
 
             }
 
 
-            const name =
-                user.name ||
-                "Vendedor";
+            if (smallAvatar) {
+
+                smallAvatar.textContent =
+                    initial;
+
+            }
 
 
-            avatar.textContent =
-                name
-                    .trim()
-                    .charAt(0)
-                    .toUpperCase() || "V";
+            if (topbarAvatar) {
+
+                topbarAvatar.textContent =
+                    initial;
+
+            }
 
         }
 
@@ -425,6 +473,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const tamanhoMaximo = 512;
 
+
             let largura =
                 img.width;
 
@@ -441,7 +490,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     altura =
                         altura *
-                        (tamanhoMaximo / largura);
+                        (
+                            tamanhoMaximo /
+                            largura
+                        );
 
                     largura =
                         tamanhoMaximo;
@@ -450,7 +502,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     largura =
                         largura *
-                        (tamanhoMaximo / altura);
+                        (
+                            tamanhoMaximo /
+                            altura
+                        );
 
                     altura =
                         tamanhoMaximo;
@@ -495,7 +550,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
 
-            callback(resultado);
+            callback(
+                resultado
+            );
 
         };
 
@@ -538,7 +595,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
 
-            message.textContent = "";
+            message.textContent =
+                "";
 
             message.classList.remove(
                 "error"

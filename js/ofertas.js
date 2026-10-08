@@ -1,239 +1,183 @@
+/* =========================================================
+   HUNTER IA — OFERTAS.JS
+   Gerador de ofertas profissionais
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("ofertas-content");
 
-    if (!container) return;
+    const servico =
+        document.getElementById("oferta-servico");
 
-    container.innerHTML = `
-        <div class="tool-panel">
-            <div class="tool-intro">
-                <span class="tool-badge">GERADOR DE OFERTAS</span>
+    const problema =
+        document.getElementById("oferta-problema");
 
-                <h2>Transforme seu serviço em uma oferta mais atraente.</h2>
+    const beneficio =
+        document.getElementById("oferta-beneficio");
 
-                <p>
-                    Informe o que você vende e para quem. O Hunter IA
-                    vai estruturar uma oferta mais clara e focada em
-                    conversão.
-                </p>
-            </div>
+    const botao =
+        document.getElementById("oferta-gerar");
 
-            <div class="form-group">
-                <label for="oferta-produto">
-                    O que você vende?
-                </label>
+    const resultado =
+        document.getElementById("oferta-result");
 
-                <input
-                    type="text"
-                    id="oferta-produto"
-                    placeholder="Ex: Landing Page profissional"
-                >
-            </div>
 
-            <div class="form-group">
-                <label for="oferta-publico">
-                    Para quem você vende?
-                </label>
+    if (
+        !servico ||
+        !problema ||
+        !beneficio ||
+        !botao ||
+        !resultado
+    ) {
+        return;
+    }
 
-                <input
-                    type="text"
-                    id="oferta-publico"
-                    placeholder="Ex: Clínicas e profissionais da saúde"
-                >
-            </div>
 
-            <div class="form-group">
-                <label for="oferta-problema">
-                    Qual problema você resolve?
-                </label>
+    /* =====================================================
+       GERAR OFERTA
+       ===================================================== */
 
-                <textarea
-                    id="oferta-problema"
-                    rows="5"
-                    placeholder="Ex: A empresa não consegue apresentar seus serviços de forma profissional na internet."
-                ></textarea>
-            </div>
+    botao.addEventListener("click", () => {
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="oferta-preco">
-                        Preço atual
-                    </label>
+        const nomeServico =
+            servico.value.trim();
 
-                    <input
-                        type="text"
-                        id="oferta-preco"
-                        placeholder="Ex: R$ 497"
-                    >
-                </div>
+        const problemaCliente =
+            problema.value.trim();
 
-                <div class="form-group">
-                    <label for="oferta-prazo">
-                        Prazo de entrega
-                    </label>
+        const beneficioCliente =
+            beneficio.value.trim();
 
-                    <input
-                        type="text"
-                        id="oferta-prazo"
-                        placeholder="Ex: 5 dias"
-                    >
-                </div>
-            </div>
 
-            <button id="gerar-oferta" class="primary-button">
-                Gerar oferta
-            </button>
+        if (!nomeServico) {
 
-            <div id="oferta-result" class="ai-result hidden"></div>
-        </div>
-    `;
+            mostrarResultado(
+                "Digite o serviço ou produto que você deseja oferecer."
+            );
 
-    const produto = document.getElementById("oferta-produto");
-    const publico = document.getElementById("oferta-publico");
-    const problema = document.getElementById("oferta-problema");
-    const preco = document.getElementById("oferta-preco");
-    const prazo = document.getElementById("oferta-prazo");
-
-    const button = document.getElementById("gerar-oferta");
-    const result = document.getElementById("oferta-result");
-
-    button.addEventListener("click", () => {
-        const produtoTexto = produto.value.trim();
-        const publicoTexto = publico.value.trim();
-        const problemaTexto = problema.value.trim();
-
-        const precoTexto = preco.value.trim() || "Consulte o valor";
-        const prazoTexto = prazo.value.trim() || "Prazo combinado";
-
-        if (!produtoTexto || !publicoTexto || !problemaTexto) {
-            result.className = "ai-result error";
-
-            result.innerHTML = `
-                <strong>Preencha os campos principais.</strong>
-
-                <p>
-                    Informe o produto, público e problema que sua
-                    oferta resolve.
-                </p>
-            `;
+            servico.focus();
 
             return;
         }
 
-        button.disabled = true;
-        button.textContent = "Criando oferta...";
 
-        result.className = "ai-result";
+        if (!problemaCliente) {
 
-        result.innerHTML = `
-            <div class="loading-result">
-                <span></span>
-                <span></span>
-                <span></span>
+            mostrarResultado(
+                "Digite o principal problema ou necessidade do cliente."
+            );
 
-                <p>
-                    Estruturando sua oferta...
-                </p>
-            </div>
-        `;
+            problema.focus();
 
-        setTimeout(() => {
-            result.innerHTML = `
-                <div class="result-header">
-                    <span class="tool-badge">
-                        OFERTA GERADA
-                    </span>
+            return;
+        }
 
-                    <h3>
-                        ${produtoTexto}
-                    </h3>
-                </div>
 
-                <div class="strategy-section">
-                    <h4>🔥 Título da oferta</h4>
+        if (!beneficioCliente) {
 
-                    <div class="copy-box">
-                        ${produtoTexto} profissional
-                        para ${publicoTexto}, criado para
-                        melhorar sua presença e gerar mais
-                        oportunidades de negócio.
-                    </div>
-                </div>
+            mostrarResultado(
+                "Digite o principal benefício que sua solução oferece."
+            );
 
-                <div class="strategy-section">
-                    <h4>🎯 Problema</h4>
+            beneficio.focus();
 
-                    <p>
-                        Seu cliente enfrenta:
-                    </p>
+            return;
+        }
 
-                    <div class="copy-box">
-                        ${problemaTexto}
-                    </div>
-                </div>
 
-                <div class="strategy-section">
-                    <h4>💎 Proposta de valor</h4>
+        const oferta =
+`OFERTA GERADA PELO HUNTER IA
 
-                    <p>
-                        Em vez de vender apenas ${produtoTexto},
-                        apresente a transformação:
-                    </p>
+🚀 ${nomeServico}
 
-                    <div class="copy-box">
-                        “Tenha uma solução profissional pensada
-                        para ${publicoTexto}, com foco em apresentar
-                        seu negócio de forma clara e transformar
-                        visitantes em novas oportunidades.”
-                    </div>
-                </div>
+Seu negócio pode estar perdendo oportunidades por causa de:
 
-                <div class="strategy-section">
-                    <h4>📦 O que está incluso</h4>
+"${problemaCliente}"
 
-                    <ul class="offer-list">
-                        <li>✓ Desenvolvimento personalizado</li>
-                        <li>✓ Estrutura profissional</li>
-                        <li>✓ Otimização para celular</li>
-                        <li>✓ Organização focada em conversão</li>
-                        <li>✓ Suporte durante a entrega</li>
-                    </ul>
-                </div>
+A solução:
 
-                <div class="strategy-section">
-                    <h4>💰 Investimento</h4>
+Com ${nomeServico}, você pode solucionar esse problema de forma mais profissional e estratégica.
 
-                    <div class="price-highlight">
-                        <strong>${precoTexto}</strong>
+Principal benefício:
 
-                        <span>
-                            Entrega estimada: ${prazoTexto}
-                        </span>
-                    </div>
-                </div>
+${beneficioCliente}
 
-                <div class="strategy-section">
-                    <h4>🚀 Chamada para ação</h4>
+━━━━━━━━━━━━━━━━━━━━
 
-                    <div class="copy-box">
-                        “Se fizer sentido para você, podemos
-                        começar ainda hoje. Posso te explicar
-                        rapidamente como funciona e já deixar
-                        tudo encaminhado.”
-                    </div>
-                </div>
+💬 MENSAGEM PARA ENVIAR AO CLIENTE
 
-                <div class="strategy-summary">
-                    <strong>Público:</strong> ${publicoTexto}<br>
-                    <strong>Produto:</strong> ${produtoTexto}<br>
-                    <strong>Preço:</strong> ${precoTexto}<br>
-                    <strong>Prazo:</strong> ${prazoTexto}
-                </div>
-            `;
+Olá! Tudo bem?
 
-            result.classList.add("show");
+Estive conhecendo um pouco melhor o seu negócio e percebi uma oportunidade que pode ajudar vocês.
 
-            button.disabled = false;
-            button.textContent = "Gerar nova oferta";
-        }, 900);
+Notei que ${problemaCliente.toLowerCase()}.
+
+Eu trabalho com ${nomeServico} e acredito que podemos melhorar esse ponto e gerar um resultado mais interessante para o negócio.
+
+O principal objetivo seria ${beneficioCliente.toLowerCase()}.
+
+Se fizer sentido para você, podemos conversar rapidamente e eu te explico como funcionaria.
+
+Podemos marcar uma ligação ou uma reunião rápida?
+
+━━━━━━━━━━━━━━━━━━━━
+
+🎯 DICA DO HUNTER IA
+
+Não tente vender tudo na primeira mensagem.
+
+Primeiro desperte interesse.
+
+Depois entenda o problema do cliente.
+
+Por último, apresente sua solução e o investimento.
+
+Venda a transformação, não apenas o serviço.`;
+
+        mostrarResultado(oferta);
+
     });
+
+
+    /* =====================================================
+       ENTER / CTRL + ENTER
+       ===================================================== */
+
+    [servico, problema, beneficio].forEach(input => {
+
+        input.addEventListener("keydown", event => {
+
+            if (
+                event.key === "Enter" &&
+                (event.ctrlKey || event.metaKey)
+            ) {
+
+                event.preventDefault();
+
+                botao.click();
+
+            }
+
+        });
+
+    });
+
+
+    /* =====================================================
+       RESULTADO
+       ===================================================== */
+
+    function mostrarResultado(texto) {
+
+        resultado.classList.remove("hidden");
+
+        resultado.textContent =
+            texto;
+
+        resultado.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+
+    }
+
 });

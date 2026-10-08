@@ -1,219 +1,224 @@
+/* =========================================================
+   HUNTER IA — CALCULADORA.JS
+   Calculadora de preços para serviços digitais
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("calculadora-content");
 
-    if (!container) return;
+    const servico =
+        document.getElementById("calc-servico");
 
-    container.innerHTML = `
-        <div class="tool-panel">
-            <div class="tool-intro">
-                <span class="tool-badge">CALCULADORA DE PREÇOS</span>
+    const custo =
+        document.getElementById("calc-custo");
 
-                <h2>Descubra quanto cobrar pelo seu serviço.</h2>
+    const margem =
+        document.getElementById("calc-margem");
 
-                <p>
-                    Informe o tipo de projeto, nível de complexidade e
-                    prazo para chegar a uma sugestão de preço.
-                </p>
-            </div>
+    const botao =
+        document.getElementById("calc-gerar");
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="calc-servico">Tipo de serviço</label>
+    const resultado =
+        document.getElementById("calc-result");
 
-                    <select id="calc-servico">
-                        <option value="landing">Landing Page</option>
-                        <option value="site">Site profissional</option>
-                        <option value="loja">Loja virtual</option>
-                        <option value="automacao">Automação</option>
-                        <option value="chatbot">Chatbot</option>
-                    </select>
-                </div>
 
-                <div class="form-group">
-                    <label for="calc-complexidade">Complexidade</label>
+    if (
+        !servico ||
+        !custo ||
+        !margem ||
+        !botao ||
+        !resultado
+    ) {
+        return;
+    }
 
-                    <select id="calc-complexidade">
-                        <option value="1">Básica</option>
-                        <option value="1.5">Intermediária</option>
-                        <option value="2">Avançada</option>
-                    </select>
-                </div>
-            </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="calc-horas">Horas estimadas</label>
+    /* =====================================================
+       CALCULAR
+       ===================================================== */
 
-                    <input
-                        type="number"
-                        id="calc-horas"
-                        min="1"
-                        value="5"
-                        placeholder="Ex: 10"
-                    >
-                </div>
+    botao.addEventListener("click", () => {
 
-                <div class="form-group">
-                    <label for="calc-hora">Valor da sua hora</label>
+        const custoValor =
+            Number(custo.value);
 
-                    <input
-                        type="number"
-                        id="calc-hora"
-                        min="1"
-                        value="30"
-                        placeholder="Ex: 50"
-                    >
-                </div>
-            </div>
+        const margemValor =
+            Number(margem.value);
 
-            <div class="form-group">
-                <label for="calc-custos">Custos extras</label>
-
-                <input
-                    type="number"
-                    id="calc-custos"
-                    min="0"
-                    value="0"
-                    placeholder="Ex: 50"
-                >
-            </div>
-
-            <button id="calcular-preco" class="primary-button">
-                Calcular preço
-            </button>
-
-            <div id="calculadora-result" class="ai-result hidden"></div>
-        </div>
-    `;
-
-    const servico = document.getElementById("calc-servico");
-    const complexidade = document.getElementById("calc-complexidade");
-    const horas = document.getElementById("calc-horas");
-    const valorHora = document.getElementById("calc-hora");
-    const custos = document.getElementById("calc-custos");
-    const button = document.getElementById("calcular-preco");
-    const result = document.getElementById("calculadora-result");
-
-    const nomesServicos = {
-        landing: "Landing Page",
-        site: "Site profissional",
-        loja: "Loja virtual",
-        automacao: "Automação",
-        chatbot: "Chatbot"
-    };
-
-    button.addEventListener("click", () => {
-        const horasValue = Number(horas.value);
-        const horaValue = Number(valorHora.value);
-        const custosValue = Number(custos.value);
-        const multiplicador = Number(complexidade.value);
 
         if (
-            !horasValue ||
-            horasValue <= 0 ||
-            !horaValue ||
-            horaValue <= 0
+            !Number.isFinite(custoValor) ||
+            custoValor <= 0
         ) {
-            result.className = "ai-result error";
 
-            result.innerHTML = `
-                <strong>Preencha os valores corretamente.</strong>
-                <p>
-                    Informe pelo menos as horas estimadas e o valor
-                    da sua hora.
-                </p>
-            `;
+            mostrarResultado(
+                "Digite um custo válido maior que R$ 0,00."
+            );
 
             return;
         }
 
-        const custoBase = horasValue * horaValue;
-        const custoComplexidade = custoBase * multiplicador;
-        const custoTotal = custoComplexidade + custosValue;
 
-        const margem = custoTotal * 0.35;
-        const precoSugerido = custoTotal + margem;
+        if (
+            !Number.isFinite(margemValor) ||
+            margemValor < 0
+        ) {
 
-        const precoMinimo = precoSugerido * 0.85;
-        const precoPremium = precoSugerido * 1.25;
+            mostrarResultado(
+                "Digite uma margem de lucro válida."
+            );
 
-        const formatar = (valor) => {
-            return valor.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL"
-            });
+            return;
+        }
+
+
+        const preco =
+            custoValor *
+            (1 + margemValor / 100);
+
+
+        const lucro =
+            preco - custoValor;
+
+
+        const nomeServico =
+            obterNomeServico(
+                servico.value
+            );
+
+
+        const precoFormatado =
+            formatarMoeda(preco);
+
+        const custoFormatado =
+            formatarMoeda(custoValor);
+
+        const lucroFormatado =
+            formatarMoeda(lucro);
+
+
+        mostrarResultado(
+`RESULTADO DA CALCULADORA
+
+Serviço: ${nomeServico}
+
+Custo estimado:
+${custoFormatado}
+
+Margem de lucro:
+${margemValor}%
+
+Preço sugerido:
+${precoFormatado}
+
+Lucro estimado:
+${lucroFormatado}
+
+━━━━━━━━━━━━━━━━━━━━
+
+DICA DO HUNTER IA
+
+Esse valor é uma referência baseada apenas no seu custo e na margem informada.
+
+Antes de enviar o preço ao cliente, considere também:
+
+• Complexidade do projeto
+• Tempo de desenvolvimento
+• Valor percebido pelo cliente
+• Urgência
+• Revisões
+• Manutenção
+• Resultado que o serviço pode gerar
+
+Não venda somente pelo seu custo. Venda pelo valor da solução.`
+        );
+
+    });
+
+
+    /* =====================================================
+       ENTER
+       ===================================================== */
+
+    [custo, margem].forEach(input => {
+
+        input.addEventListener("keydown", event => {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                botao.click();
+
+            }
+
+        });
+
+    });
+
+
+    /* =====================================================
+       NOME DO SERVIÇO
+       ===================================================== */
+
+    function obterNomeServico(valor) {
+
+        const nomes = {
+
+            landing:
+                "Landing Page",
+
+            site:
+                "Site",
+
+            loja:
+                "Loja Virtual",
+
+            automacao:
+                "Automação",
+
+            outro:
+                "Outro serviço"
+
         };
 
-        result.className = "ai-result";
+        return nomes[valor] || "Serviço digital";
 
-        result.innerHTML = `
-            <div class="result-header">
-                <span class="tool-badge">RESULTADO</span>
+    }
 
-                <h3>
-                    ${nomesServicos[servico.value]}
-                </h3>
-            </div>
 
-            <div class="price-grid">
+    /* =====================================================
+       FORMATA MOEDA
+       ===================================================== */
 
-                <div class="price-card">
-                    <span>Preço mínimo</span>
-                    <strong>${formatar(precoMinimo)}</strong>
-                    <small>
-                        Evite cobrar abaixo disso.
-                    </small>
-                </div>
+    function formatarMoeda(valor) {
 
-                <div class="price-card featured">
-                    <span>Preço recomendado</span>
-                    <strong>${formatar(precoSugerido)}</strong>
-                    <small>
-                        Melhor equilíbrio entre preço e margem.
-                    </small>
-                </div>
+        return valor.toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
 
-                <div class="price-card">
-                    <span>Preço premium</span>
-                    <strong>${formatar(precoPremium)}</strong>
-                    <small>
-                        Para uma oferta mais completa.
-                    </small>
-                </div>
+    }
 
-            </div>
 
-            <div class="strategy-section">
-                <h4>Resumo do cálculo</h4>
+    /* =====================================================
+       RESULTADO
+       ===================================================== */
 
-                <p>
-                    <strong>Horas:</strong> ${horasValue}h
-                </p>
+    function mostrarResultado(texto) {
 
-                <p>
-                    <strong>Valor/hora:</strong> ${formatar(horaValue)}
-                </p>
+        resultado.classList.remove("hidden");
 
-                <p>
-                    <strong>Custos extras:</strong> ${formatar(custosValue)}
-                </p>
+        resultado.textContent =
+            texto;
 
-                <p>
-                    <strong>Custo calculado:</strong> ${formatar(custoTotal)}
-                </p>
-            </div>
+        resultado.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
 
-            <div class="strategy-section">
-                <h4>💡 Estratégia</h4>
+    }
 
-                <p>
-                    Não apresente apenas o preço. Mostre primeiro o
-                    resultado que o cliente receberá e depois apresente
-                    o investimento.
-                </p>
-            </div>
-        `;
-
-        result.classList.add("show");
-    });
 });

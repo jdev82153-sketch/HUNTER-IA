@@ -4,34 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#070b10">
+
     <title>Hunter IA</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <!-- =====================================================
-         SPLASH
+         SPLASH SCREEN
          ===================================================== -->
 
-    <div id="splash-screen" class="screen splash-screen">
-
+    <div id="splash-screen" class="splash-screen">
         <div class="splash-content">
-
             <img
-                class="splash-logo"
                 src="assets/FF48BAAF-FBEA-459D-8107-F9C8BB5BD0C6.png"
                 alt="Hunter IA"
+                class="splash-logo"
             >
 
-            <div class="splash-loader"></div>
+            <div class="splash-loader">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
 
-            <p class="splash-text">
-                Preparando seu ambiente de vendas...
-            </p>
-
+            <p>Preparando seu Hunter IA...</p>
         </div>
-
     </div>
 
 
@@ -39,99 +39,42 @@
          LOGIN
          ===================================================== -->
 
-    <section id="login-screen" class="screen login-screen hidden">
+    <section id="login-screen" class="login-screen">
 
-        <div class="login-container">
+        <div class="login-box">
 
-            <div class="login-brand">
+            <img
+                src="assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg"
+                alt="Hunter IA"
+                class="login-logo"
+            >
 
-                <img
-                    src="assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg"
-                    alt="Hunter IA"
-                >
+            <h1>Bem-vindo ao Hunter IA</h1>
 
-                <h1>
-                    Venda mais.<br>
-                    Venda melhor.
-                </h1>
+            <p class="login-subtitle">
+                Sua inteligência artificial para vendas.
+            </p>
 
-                <p>
-                    O Hunter IA reúne ferramentas inteligentes
-                    para ajudar você a encontrar oportunidades,
-                    criar ofertas e melhorar suas vendas.
-                </p>
+            <form id="login-form">
 
-            </div>
+                <div class="input-group">
+                    <label for="user-name">Como podemos te chamar?</label>
 
-
-            <div class="login-card">
-
-                <img
-                    class="login-logo"
-                    src="assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg"
-                    alt="Hunter IA"
-                >
-
-                <h2>
-                    Bem-vindo ao Hunter IA
-                </h2>
-
-                <p>
-                    Entre com seus dados para acessar
-                    seu painel de vendas.
-                </p>
-
-
-                <form id="login-form">
-
-                    <div class="form-group">
-
-                        <label for="login-name">
-                            Seu nome
-                        </label>
-
-                        <input
-                            type="text"
-                            id="login-name"
-                            placeholder="Digite seu nome"
-                            autocomplete="name"
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="login-password">
-                            Senha
-                        </label>
-
-                        <input
-                            type="password"
-                            id="login-password"
-                            placeholder="Digite sua senha"
-                            autocomplete="current-password"
-                        >
-
-                    </div>
-
-
-                    <button
-                        type="submit"
-                        class="primary-button"
+                    <input
+                        type="text"
+                        id="user-name"
+                        name="user-name"
+                        placeholder="Digite seu nome"
+                        autocomplete="name"
+                        required
                     >
-                        Entrar no Hunter
-                    </button>
+                </div>
 
+                <button type="submit" class="primary-button">
+                    Entrar no Hunter IA
+                </button>
 
-                    <div
-                        id="login-message"
-                        class="login-message"
-                    ></div>
-
-                </form>
-
-            </div>
+            </form>
 
         </div>
 
@@ -139,10 +82,13 @@
 
 
     <!-- =====================================================
-         APP
+         APLICAÇÃO
          ===================================================== -->
 
-    <div id="app" class="app hidden">
+    <div id="app" class="app-container">
+
+        <!-- OVERLAY MOBILE -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
 
         <!-- =================================================
@@ -151,143 +97,154 @@
 
         <aside id="sidebar" class="sidebar">
 
-            <div class="sidebar-logo">
+            <div class="sidebar-header">
 
                 <img
                     src="assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg"
                     alt="Hunter IA"
+                    class="sidebar-logo"
                 >
 
-                <span>
-                    Hunter IA
-                </span>
+                <div class="sidebar-brand">
+                    <strong>Hunter IA</strong>
+                    <span>Seu assistente inteligente</span>
+                </div>
 
             </div>
 
 
-            <nav class="nav-menu">
+            <nav class="sidebar-nav">
 
-
-                <!-- DASHBOARD -->
+                <div class="nav-section-title">
+                    PRINCIPAL
+                </div>
 
                 <a
                     href="#"
                     class="nav-item active"
                     data-page="dashboard"
                 >
-                    <span>⌂</span>
+                    <span class="nav-icon">⌂</span>
                     <span>Dashboard</span>
                 </a>
 
 
-                <!-- VENDEDOR -->
+                <a
+                    href="#"
+                    class="nav-item"
+                    data-page="hunter"
+                >
+                    <span class="nav-icon">✦</span>
+                    <span>Hunter IA</span>
+                </a>
+
+
+                <div class="nav-section-title">
+                    FERRAMENTAS
+                </div>
+
 
                 <a
                     href="#"
                     class="nav-item"
                     data-page="vendedor"
                 >
-                    <span>◈</span>
+                    <span class="nav-icon">◉</span>
                     <span>Vendedor IA</span>
                 </a>
 
-
-                <!-- BUSCADOR DE LEADS -->
-
-                <a
-                    href="#"
-                    class="nav-item"
-                    data-page="leads"
-                >
-                    <span>⌕</span>
-                    <span>Buscador de Leads</span>
-                </a>
-
-
-                <!-- CALCULADORA -->
 
                 <a
                     href="#"
                     class="nav-item"
                     data-page="calculadora"
                 >
-                    <span>▣</span>
+                    <span class="nav-icon">▣</span>
                     <span>Calculadora</span>
                 </a>
 
-
-                <!-- OFERTAS -->
 
                 <a
                     href="#"
                     class="nav-item"
                     data-page="ofertas"
                 >
-                    <span>◆</span>
+                    <span class="nav-icon">◆</span>
                     <span>Gerador de Ofertas</span>
                 </a>
 
-
-                <!-- TREINADOR -->
 
                 <a
                     href="#"
                     class="nav-item"
                     data-page="treinador"
                 >
-                    <span>◎</span>
-                    <span>Treinador</span>
+                    <span class="nav-icon">★</span>
+                    <span>Treinador de Vendas</span>
                 </a>
 
 
-                <!-- PERFIL -->
+                <div class="nav-section-title">
+                    CONTA
+                </div>
+
 
                 <a
                     href="#"
                     class="nav-item"
                     data-page="perfil"
                 >
-                    <span>○</span>
+                    <span class="nav-icon">●</span>
                     <span>Meu Perfil</span>
                 </a>
 
-
-                <!-- CONFIGURAÇÕES -->
 
                 <a
                     href="#"
                     class="nav-item"
                     data-page="configuracoes"
                 >
-                    <span>⚙</span>
+                    <span class="nav-icon">⚙</span>
                     <span>Configurações</span>
                 </a>
 
             </nav>
 
+
+            <div class="sidebar-footer">
+
+                <div class="sidebar-user">
+
+                    <div class="sidebar-user-avatar" id="sidebar-user-avatar">
+                        JP
+                    </div>
+
+                    <div class="sidebar-user-info">
+
+                        <strong id="sidebar-user-name">
+                            Usuário
+                        </strong>
+
+                        <span>
+                            Conta ativa
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </aside>
 
 
         <!-- =================================================
-             MOBILE OVERLAY
-             ================================================= -->
-
-        <div
-            id="sidebar-overlay"
-            class="sidebar-overlay"
-        ></div>
-
-
-        <!-- =================================================
-             MAIN
+             CONTEÚDO PRINCIPAL
              ================================================= -->
 
         <main class="main-content">
 
-
-            <!-- =================================================
-                 TOPBAR
-                 ================================================= -->
+            <!-- TOPBAR -->
 
             <header class="topbar">
 
@@ -302,29 +259,23 @@
                         ☰
                     </button>
 
+                    <div class="topbar-title">
 
-                    <div
-                        id="page-breadcrumb"
-                        class="page-breadcrumb"
-                    >
-                        Dashboard
+                        <span id="page-title">
+                            Dashboard
+                        </span>
+
                     </div>
 
                 </div>
 
 
-                <div class="topbar-user">
+                <div class="topbar-right">
 
-                    <div
-                        id="profile-avatar"
-                        class="profile-avatar"
-                    >
-                        V
+                    <div class="topbar-status">
+                        <span class="status-dot"></span>
+                        Online
                     </div>
-
-                    <span id="topbar-user-name">
-                        Vendedor
-                    </span>
 
                 </div>
 
@@ -332,28 +283,97 @@
 
 
             <!-- =================================================
-                 DASHBOARD
+                 PÁGINA: DASHBOARD
                  ================================================= -->
 
             <section
                 id="page-dashboard"
                 class="page active-page"
+                data-page-section="dashboard"
             >
 
-                <div class="dashboard-header">
+                <div class="dashboard-welcome">
 
-                    <h1 id="dashboard-user-name">
-                        Olá, Vendedor
-                    </h1>
+                    <div>
 
-                    <p>
-                        O que você quer fazer hoje?
-                    </p>
+                        <span class="eyebrow">
+                            CENTRAL HUNTER IA
+                        </span>
 
-                    <p class="dashboard-subtitle">
-                        Escolha uma ferramenta e deixe o Hunter IA
-                        trabalhando na sua estratégia.
-                    </p>
+                        <h1>
+                            Olá, <span id="dashboard-user-name">João Pedro</span> 👋
+                        </h1>
+
+                        <p id="dashboard-greeting">
+                            Pronto para vender mais hoje?
+                        </p>
+
+                    </div>
+
+
+                    <div class="dashboard-main-logo">
+
+                        <img
+                            src="assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg"
+                            alt="Hunter IA"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- CARD PRINCIPAL HUNTER IA -->
+
+                <div
+                    class="hero-ai-card"
+                    data-page-target="hunter"
+                >
+
+                    <div class="hero-ai-content">
+
+                        <div class="hero-ai-badge">
+                            ✦ INTELIGÊNCIA ARTIFICIAL
+                        </div>
+
+                        <h2>
+                            Converse com o Hunter IA
+                        </h2>
+
+                        <p>
+                            Seu assistente inteligente para vendas, estratégias,
+                            clientes, ofertas e muito mais.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="primary-button hero-ai-button"
+                            data-page-target="hunter"
+                        >
+                            Conversar com o Hunter IA →
+                        </button>
+
+                    </div>
+
+
+                    <div class="hero-ai-icon">
+
+                        <img
+                            src="assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg"
+                            alt="Hunter IA"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="eyebrow">FERRAMENTAS</span>
+                        <h2>Potencialize suas vendas</h2>
+                    </div>
 
                 </div>
 
@@ -363,211 +383,163 @@
 
                     <!-- VENDEDOR -->
 
-                    <article
+                    <div
                         class="tool-card"
-                        data-page="vendedor"
+                        data-page-target="vendedor"
                     >
 
-                        <div class="tool-card-top">
+                        <div class="tool-card-image">
 
                             <img
-                                class="tool-card-image"
                                 src="assets/7a39210b-3d24-4a2b-8950-8f6870fac9e0.jpeg"
                                 alt="Vendedor IA"
                             >
 
-                            <span class="tool-card-badge">
-                                MAIS USADO
+                        </div>
+
+                        <div class="tool-card-content">
+
+                            <span class="tool-badge">
+                                VENDAS
                             </span>
+
+                            <h3>
+                                Vendedor IA
+                            </h3>
+
+                            <p>
+                                Crie abordagens profissionais e
+                                converse melhor com seus clientes.
+                            </p>
+
+                            <button type="button">
+                                Abrir ferramenta →
+                            </button>
 
                         </div>
 
-
-                        <h3>
-                            Vendedor IA
-                        </h3>
-
-
-                        <p>
-                            Crie estratégias para abordar clientes,
-                            responder objeções e fechar vendas.
-                        </p>
-
-
-                        <button
-                            type="button"
-                            class="tool-button"
-                        >
-                            Abrir ferramenta →
-                        </button>
-
-                    </article>
-
-
-                    <!-- BUSCADOR DE LEADS -->
-
-                    <article
-                        class="tool-card"
-                        data-page="leads"
-                    >
-
-                        <div class="tool-card-top">
-
-                            <div
-                                class="tool-card-image"
-                                style="
-                                    display:flex;
-                                    align-items:center;
-                                    justify-content:center;
-                                    font-size:32px;
-                                "
-                            >
-                                🔎
-                            </div>
-
-                            <span class="tool-card-badge">
-                                NOVO
-                            </span>
-
-                        </div>
-
-
-                        <h3>
-                            Buscador de Leads
-                        </h3>
-
-
-                        <p>
-                            Encontre empresas e potenciais clientes
-                            por cidade, país e nicho.
-                        </p>
-
-
-                        <button
-                            type="button"
-                            class="tool-button"
-                        >
-                            Encontrar clientes →
-                        </button>
-
-                    </article>
+                    </div>
 
 
                     <!-- CALCULADORA -->
 
-                    <article
+                    <div
                         class="tool-card"
-                        data-page="calculadora"
+                        data-page-target="calculadora"
                     >
 
-                        <div class="tool-card-top">
+                        <div class="tool-card-image">
 
                             <img
-                                class="tool-card-image"
                                 src="assets/dcb8180a-9988-441c-9f5d-23327408bb59.jpeg"
-                                alt="Calculadora de Preços"
+                                alt="Calculadora"
                             >
 
                         </div>
 
+                        <div class="tool-card-content">
 
-                        <h3>
-                            Calculadora de Preços
-                        </h3>
+                            <span class="tool-badge">
+                                PREÇOS
+                            </span>
 
+                            <h3>
+                                Calculadora
+                            </h3>
 
-                        <p>
-                            Descubra quanto cobrar pelos seus
-                            serviços de forma rápida e estratégica.
-                        </p>
+                            <p>
+                                Calcule preços, custos, margens
+                                e valores para suas vendas.
+                            </p>
 
+                            <button type="button">
+                                Abrir ferramenta →
+                            </button>
 
-                        <button
-                            type="button"
-                            class="tool-button"
-                        >
-                            Calcular preço →
-                        </button>
+                        </div>
 
-                    </article>
+                    </div>
 
 
                     <!-- OFERTAS -->
 
-                    <article
+                    <div
                         class="tool-card"
-                        data-page="ofertas"
+                        data-page-target="ofertas"
                     >
 
-                        <div class="tool-card-top">
+                        <div class="tool-card-image">
 
                             <img
-                                class="tool-card-image"
                                 src="assets/dbd4e5e3-4e51-42f9-871c-fbf8ee71b89c.jpeg"
                                 alt="Gerador de Ofertas"
                             >
 
                         </div>
 
+                        <div class="tool-card-content">
 
-                        <h3>
-                            Gerador de Ofertas
-                        </h3>
+                            <span class="tool-badge">
+                                OFERTAS
+                            </span>
 
+                            <h3>
+                                Gerador de Ofertas
+                            </h3>
 
-                        <p>
-                            Transforme seu serviço em uma oferta
-                            mais clara, atrativa e focada em conversão.
-                        </p>
+                            <p>
+                                Transforme produtos e serviços
+                                em ofertas mais atrativas.
+                            </p>
 
+                            <button type="button">
+                                Abrir ferramenta →
+                            </button>
 
-                        <button
-                            type="button"
-                            class="tool-button"
-                        >
-                            Criar oferta →
-                        </button>
+                        </div>
 
-                    </article>
+                    </div>
 
 
                     <!-- TREINADOR -->
 
-                    <article
+                    <div
                         class="tool-card"
-                        data-page="treinador"
+                        data-page-target="treinador"
                     >
 
-                        <div class="tool-card-top">
+                        <div class="tool-card-image">
 
                             <img
-                                class="tool-card-image"
                                 src="assets/f9784c2c-e4ba-4c1f-91d4-6c0ec82d0ce1.jpeg"
                                 alt="Treinador de Vendas"
                             >
 
                         </div>
 
+                        <div class="tool-card-content">
 
-                        <h3>
-                            Treinador de Vendas
-                        </h3>
+                            <span class="tool-badge">
+                                TREINAMENTO
+                            </span>
 
+                            <h3>
+                                Treinador de Vendas
+                            </h3>
 
-                        <p>
-                            Simule conversas com clientes e descubra
-                            como melhorar sua abordagem.
-                        </p>
+                            <p>
+                                Treine suas respostas e fique
+                                melhor em negociações.
+                            </p>
 
+                            <button type="button">
+                                Começar treino →
+                            </button>
 
-                        <button
-                            type="button"
-                            class="tool-button"
-                        >
-                            Começar treino →
-                        </button>
+                        </div>
 
-                    </article>
+                    </div>
+
 
                 </div>
 
@@ -575,725 +547,165 @@
 
 
             <!-- =================================================
-                 VENDEDOR IA
+                 PÁGINA: HUNTER IA
+                 ================================================= -->
+
+            <section
+                id="page-hunter"
+                class="page"
+                data-page-section="hunter"
+            >
+
+                <div class="hunter-page">
+
+                    <div class="hunter-header">
+
+                        <div class="hunter-header-info">
+
+                            <div class="hunter-avatar">
+
+                                <img
+                                    src="assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg"
+                                    alt="Hunter IA"
+                                >
+
+                            </div>
+
+                            <div>
+
+                                <span class="eyebrow">
+                                    INTELIGÊNCIA ARTIFICIAL
+                                </span>
+
+                                <h1>
+                                    Hunter IA
+                                </h1>
+
+                                <p>
+                                    Seu assistente inteligente para vendas e negócios.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="ai-online-status">
+                            <span class="status-dot"></span>
+                            Assistente
+                        </div>
+
+                    </div>
+
+
+                    <!-- CHAT -->
+
+                    <div class="hunter-chat">
+
+                        <div
+                            id="hunter-chat-messages"
+                            class="hunter-chat-messages"
+                        >
+
+                            <div class="chat-message ai-message">
+
+                                <div class="chat-avatar">
+
+                                    <img
+                                        src="assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg"
+                                        alt="Hunter IA"
+                                    >
+
+                                </div>
+
+                                <div class="chat-bubble">
+
+                                    <strong>Hunter IA</strong>
+
+                                    <p>
+                                        Olá! 👋 Eu sou o Hunter IA.
+                                    </p>
+
+                                    <p>
+                                        Posso te ajudar com vendas, clientes,
+                                        estratégias, abordagens, ofertas,
+                                        ideias para negócios e muito mais.
+                                    </p>
+
+                                    <p>
+                                        O que você quer fazer hoje?
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="hunter-suggestions">
+
+                            <button type="button" class="suggestion-button">
+                                💰 Como conseguir minha primeira venda?
+                            </button>
+
+                            <button type="button" class="suggestion-button">
+                                💬 Crie uma abordagem para um cliente
+                            </button>
+
+                            <button type="button" class="suggestion-button">
+                                📈 Me dê uma estratégia de vendas
+                            </button>
+
+                            <button type="button" class="suggestion-button">
+                                💡 Me dê uma ideia de negócio
+                            </button>
+
+                        </div>
+
+
+                        <form
+                            id="hunter-chat-form"
+                            class="hunter-chat-input-area"
+                        >
+
+                            <textarea
+                                id="hunter-chat-input"
+                                placeholder="Converse com o Hunter IA..."
+                                rows="1"
+                                autocomplete="off"
+                            ></textarea>
+
+                            <button
+                                type="submit"
+                                class="hunter-send-button"
+                                aria-label="Enviar mensagem"
+                            >
+                                ➤
+                            </button>
+
+                        </form>
+
+                        <div class="hunter-disclaimer">
+                            Hunter IA está aqui para ajudar você a pensar,
+                            planejar e vender melhor.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 PÁGINA: VENDEDOR IA
                  ================================================= -->
 
             <section
                 id="page-vendedor"
-                class="page hidden-page"
+                class="page"
+                data-page-section="vendedor"
             >
 
-                <div class="tool-page-header">
-
-                    <div class="tool-page-icon">
-
-                        <img
-                            src="assets/7a39210b-3d24-4a2b-8950-8f6870fac9e0.jpeg"
-                            alt="Vendedor IA"
-                        >
-
-                    </div>
-
-
-                    <div>
-
-                        <h1>
-                            Vendedor IA
-                        </h1>
-
-                        <p>
-                            Crie uma estratégia para conduzir
-                            sua conversa até a venda.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div id="vendedor-content"></div>
-
-            </section>
-
-
-            <!-- =================================================
-                 BUSCADOR DE LEADS
-                 ================================================= -->
-
-            <section
-                id="page-leads"
-                class="page hidden-page"
-            >
-
-                <div class="tool-page-header">
-
-                    <div
-                        class="tool-page-icon"
-                        style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            font-size:28px;
-                        "
-                    >
-                        🔎
-                    </div>
-
-
-                    <div>
-
-                        <h1>
-                            Buscador de Leads
-                        </h1>
-
-                        <p>
-                            Encontre clientes por cidade,
-                            país e nicho.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ÁREA DO BUSCADOR -->
-
-                <div
-                    id="leads-content"
-                    class="tool-content"
-                >
-
-                    <div class="tool-panel">
-
-                        <div class="tool-panel-header">
-
-                            <h2>
-                                Encontrar novos clientes
-                            </h2>
-
-                            <p>
-                                Informe onde e qual tipo de empresa
-                                você deseja prospectar.
-                            </p>
-
-                        </div>
-
-
-                        <form id="leads-search-form">
-
-
-                            <!-- PAÍS -->
-
-                            <div class="form-group">
-
-                                <label for="lead-country">
-                                    País
-                                </label>
-
-                                <select id="lead-country">
-
-                                    <option value="BR">
-                                        🇧🇷 Brasil
-                                    </option>
-
-                                    <option value="US">
-                                        🇺🇸 Estados Unidos
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-
-                            <!-- CIDADE -->
-
-                            <div class="form-group">
-
-                                <label for="lead-city">
-                                    Cidade
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="lead-city"
-                                    placeholder="Ex: Boston, São Paulo, Miami..."
-                                    autocomplete="off"
-                                >
-
-                            </div>
-
-
-                            <!-- NICHO -->
-
-                            <div class="form-group">
-
-                                <label for="lead-niche">
-                                    Nicho
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="lead-niche"
-                                    placeholder="Ex: dentistas, restaurantes, academias..."
-                                    autocomplete="off"
-                                >
-
-                            </div>
-
-
-                            <button
-                                type="submit"
-                                id="search-leads-button"
-                                class="primary-button"
-                            >
-                                🔎 Buscar Leads
-                            </button>
-
-
-                            <div
-                                id="leads-search-message"
-                                class="login-message"
-                            ></div>
-
-                        </form>
-
-                    </div>
-
-
-                    <!-- RESULTADOS -->
-
-                    <div
-                        id="leads-results"
-                        class="leads-results"
-                    >
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 CALCULADORA
-                 ================================================= -->
-
-            <section
-                id="page-calculadora"
-                class="page hidden-page"
-            >
-
-                <div class="tool-page-header">
-
-                    <div class="tool-page-icon">
-
-                        <img
-                            src="assets/dcb8180a-9988-441c-9f5d-23327408bb59.jpeg"
-                            alt="Calculadora de Preços"
-                        >
-
-                    </div>
-
-
-                    <div>
-
-                        <h1>
-                            Calculadora de Preços
-                        </h1>
-
-                        <p>
-                            Descubra um preço adequado para
-                            o seu projeto.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div id="calculadora-content"></div>
-
-            </section>
-
-
-            <!-- =================================================
-                 OFERTAS
-                 ================================================= -->
-
-            <section
-                id="page-ofertas"
-                class="page hidden-page"
-            >
-
-                <div class="tool-page-header">
-
-                    <div class="tool-page-icon">
-
-                        <img
-                            src="assets/dbd4e5e3-4e51-42f9-871c-fbf8ee71b89c.jpeg"
-                            alt="Gerador de Ofertas"
-                        >
-
-                    </div>
-
-
-                    <div>
-
-                        <h1>
-                            Gerador de Ofertas
-                        </h1>
-
-                        <p>
-                            Crie ofertas mais fortes e
-                            fáceis de apresentar.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div id="ofertas-content"></div>
-
-            </section>
-
-
-            <!-- =================================================
-                 TREINADOR
-                 ================================================= -->
-
-            <section
-                id="page-treinador"
-                class="page hidden-page"
-            >
-
-                <div class="tool-page-header">
-
-                    <div class="tool-page-icon">
-
-                        <img
-                            src="assets/f9784c2c-e4ba-4c1f-91d4-6c0ec82d0ce1.jpeg"
-                            alt="Treinador de Vendas"
-                        >
-
-                    </div>
-
-
-                    <div>
-
-                        <h1>
-                            Treinador de Vendas
-                        </h1>
-
-                        <p>
-                            Treine suas respostas antes de
-                            falar com um cliente real.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div id="treinador-content"></div>
-
-            </section>
-
-
-            <!-- =================================================
-                 PERFIL
-                 ================================================= -->
-
-            <section
-                id="page-perfil"
-                class="page hidden-page"
-            >
-
-                <div class="tool-page-header">
-
-                    <h1>
-                        Meu Perfil
-                    </h1>
-
-                    <p>
-                        Personalize as informações
-                        do seu perfil no Hunter IA.
-                    </p>
-
-                </div>
-
-
-                <div class="profile-card">
-
-                    <div class="profile-header">
-
-                        <div
-                            id="profile-large-avatar"
-                            class="large-avatar"
-                        >
-                            V
-                        </div>
-
-
-                        <div>
-
-                            <h2 id="profile-display-name">
-                                Vendedor
-                            </h2>
-
-                            <p>
-                                Seu perfil de vendedor
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <form id="profile-form">
-
-                        <div class="form-group">
-
-                            <label for="profile-name">
-                                Nome
-                            </label>
-
-                            <input
-                                type="text"
-                                id="profile-name"
-                                placeholder="Seu nome"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="profile-role">
-                                Função
-                            </label>
-
-                            <input
-                                type="text"
-                                id="profile-role"
-                                placeholder="Ex: Vendedor"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="profile-description">
-                                Descrição
-                            </label>
-
-                            <textarea
-                                id="profile-description"
-                                rows="5"
-                                placeholder="Fale um pouco sobre você..."
-                            ></textarea>
-
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            class="primary-button"
-                        >
-                            Salvar alterações
-                        </button>
-
-
-                        <div
-                            id="profile-message"
-                            class="profile-message"
-                        ></div>
-
-                    </form>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 CONFIGURAÇÕES
-                 ================================================= -->
-
-            <section
-                id="page-configuracoes"
-                class="page hidden-page"
-            >
-
-                <div class="tool-page-header">
-
-                    <div
-                        class="tool-page-icon"
-                        style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            font-size:26px;
-                        "
-                    >
-                        ⚙
-                    </div>
-
-
-                    <div>
-
-                        <h1>
-                            Configurações
-                        </h1>
-
-                        <p>
-                            Configure as integrações utilizadas
-                            pelo Hunter IA.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- GOOGLE PLACES -->
-
-                <div class="profile-card">
-
-                    <div class="profile-header">
-
-                        <div class="large-avatar">
-                            G
-                        </div>
-
-
-                        <div>
-
-                            <h2>
-                                Google Places
-                            </h2>
-
-                            <p>
-                                Conexão utilizada pelo
-                                Buscador de Leads.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <form id="api-settings-form">
-
-
-                        <div class="form-group">
-
-                            <label for="google-api-key">
-                                Chave da API
-                            </label>
-
-
-                            <div
-                                style="
-                                    position:relative;
-                                    display:flex;
-                                    align-items:center;
-                                "
-                            >
-
-                                <input
-                                    type="password"
-                                    id="google-api-key"
-                                    placeholder="Cole sua chave da API aqui"
-                                    autocomplete="off"
-                                    style="
-                                        width:100%;
-                                        padding-right:48px;
-                                    "
-                                >
-
-
-                                <button
-                                    type="button"
-                                    id="toggle-api-key"
-                                    aria-label="Mostrar ou esconder chave"
-                                    style="
-                                        position:absolute;
-                                        right:8px;
-                                        border:none;
-                                        background:transparent;
-                                        color:#9aa6b2;
-                                        cursor:pointer;
-                                        font-size:18px;
-                                        padding:8px;
-                                    "
-                                >
-                                    👁
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <p
-                            style="
-                                font-size:13px;
-                                color:#8b98a8;
-                                line-height:1.6;
-                                margin-bottom:18px;
-                            "
-                        >
-                            A chave ficará escondida visualmente.
-                            A validação será feita pelo sistema antes
-                            de confirmar a conexão.
-                        </p>
-
-
-                        <button
-                            type="button"
-                            id="test-api-key"
-                            class="primary-button"
-                        >
-                            🔐 Testar chave API
-                        </button>
-
-
-                        <div
-                            id="api-status"
-                            class="profile-message"
-                            style="margin-top:15px;"
-                        ></div>
-
-
-                        <div
-                            id="api-connected"
-                            style="
-                                display:none;
-                                margin-top:18px;
-                                padding:15px;
-                                border-radius:12px;
-                                background:rgba(46,204,113,0.08);
-                                border:1px solid rgba(46,204,113,0.25);
-                            "
-                        >
-
-                            <strong
-                                style="color:#2ecc71;"
-                            >
-                                🟢 Chave API funcionando
-                            </strong>
-
-                            <p
-                                style="
-                                    margin:6px 0 0;
-                                    color:#9aa6b2;
-                                    font-size:13px;
-                                "
-                            >
-                                Google Places conectado
-                                e pronto para o Buscador de Leads.
-                            </p>
-
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            class="primary-button"
-                            style="
-                                margin-top:15px;
-                                display:none;
-                            "
-                            id="save-api-key"
-                        >
-                            💾 Salvar configuração
-                        </button>
-
-                    </form>
-
-                </div>
-
-
-                <!-- SEGURANÇA -->
-
-                <div
-                    class="profile-card"
-                    style="margin-top:20px;"
-                >
-
-                    <div class="profile-header">
-
-                        <div class="large-avatar">
-                            🔒
-                        </div>
-
-
-                        <div>
-
-                            <h2>
-                                Segurança
-                            </h2>
-
-                            <p>
-                                Proteção das integrações
-                                do Hunter IA.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <p
-                        style="
-                            color:#9aa6b2;
-                            font-size:14px;
-                            line-height:1.7;
-                        "
-                    >
-                        Nunca compartilhe sua chave API.
-                        Na versão final, a chave utilizada pelo
-                        Google Places deverá ser protegida no
-                        servidor/backend e não exposta no código
-                        público do GitHub.
-                    </p>
-
-                </div>
-
-            </section>
-
-        </main>
-
-    </div>
-
-
-    <!-- =====================================================
-         JAVASCRIPT
-         ===================================================== -->
-
-    <script src="js/app.js"></script>
-
-    <script src="js/login.js"></script>
-
-    <script src="js/dashboard.js"></script>
-
-    <script src="js/perfil.js"></script>
-
-    <script src="js/vendedor.js"></script>
-
-    <script src="js/calculadora.js"></script>
-
-    <script src="js/ofertas.js"></script>
-
-    <script src="js/treinador.js"></script>
-
-    <!-- NOVOS MÓDULOS -->
-
-    <script src="js/leads.js"></script>
-
-    <script src="js/configuracoes.js"></script>
-
-</body>
-</html>
+                <div class="page-header">
+                                

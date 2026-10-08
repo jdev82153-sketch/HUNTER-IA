@@ -1,80 +1,187 @@
+/* =========================================================
+   HUNTER IA — PERFIL.JS
+   Gerenciamento do perfil do usuário
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
-    const profileForm = document.getElementById("profile-form");
-    const nameInput = document.getElementById("profile-name");
-    const roleInput = document.getElementById("profile-role");
-    const descriptionInput = document.getElementById("profile-description");
-    const message = document.getElementById("profile-message");
 
-    if (!profileForm) return;
+    const nomeInput =
+        document.getElementById("profile-name");
 
-    loadProfile();
+    const salvarButton =
+        document.getElementById("profile-save");
 
-    profileForm.addEventListener("submit", (event) => {
-        event.preventDefault();
+    const mensagem =
+        document.getElementById("profile-message");
 
-        const name = nameInput.value.trim();
-        const role = roleInput.value.trim();
-        const description = descriptionInput.value.trim();
 
-        if (!name) {
-            showMessage("Digite seu nome.", "error");
-            nameInput.focus();
+    if (
+        !nomeInput ||
+        !salvarButton ||
+        !mensagem
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       CARREGAR PERFIL
+       ===================================================== */
+
+    carregarPerfil();
+
+
+    /* =====================================================
+       SALVAR PERFIL
+       ===================================================== */
+
+    salvarButton.addEventListener("click", () => {
+
+        const nome =
+            nomeInput.value.trim();
+
+
+        if (!nome) {
+
+            mostrarMensagem(
+                "Digite seu nome antes de salvar.",
+                "error"
+            );
+
+            nomeInput.focus();
+
             return;
         }
 
-        const user = {
-            name: name,
-            role: role || "Vendedor",
-            description: description || "Profissional de vendas utilizando o Hunter IA."
-        };
 
-        localStorage.setItem("hunter_user", JSON.stringify(user));
-        localStorage.setItem("hunter_logged_in", "true");
-
-        // Atualiza toda a interface
-        if (window.HunterApp && typeof window.HunterApp.updateUserInterface === "function") {
-            window.HunterApp.updateUserInterface(user);
-        }
-
-        showMessage("Perfil atualizado com sucesso!", "success");
-    });
-
-    function loadProfile() {
-        const savedUser = localStorage.getItem("hunter_user");
-
-        if (!savedUser) return;
+        let usuario = {};
 
         try {
-            const user = JSON.parse(savedUser);
 
-            nameInput.value = user.name || "";
-            roleInput.value = user.role || "Vendedor";
-            descriptionInput.value = user.description || "";
+            usuario =
+                JSON.parse(
+                    localStorage.getItem("hunter_user")
+                ) || {};
 
-            updateProfileHeader(user);
         } catch (error) {
-            console.error("Erro ao carregar perfil:", error);
-        }
-    }
 
-    function updateProfileHeader(user) {
-        const displayName = document.getElementById("profile-display-name");
-        const largeAvatar = document.getElementById("profile-large-avatar");
+            usuario = {};
 
-        if (displayName) {
-            displayName.textContent = user.name || "Vendedor";
         }
 
-        if (largeAvatar) {
-            largeAvatar.textContent = (user.name || "V").charAt(0).toUpperCase();
+
+        usuario.name =
+            nome;
+
+
+        localStorage.setItem(
+            "hunter_user",
+            JSON.stringify(usuario)
+        );
+
+
+        /* Atualiza o restante do sistema */
+
+        if (
+            window.HunterApp &&
+            typeof window.HunterApp.loadUser === "function"
+        ) {
+
+            window.HunterApp.loadUser();
+
         }
+
+
+        mostrarMensagem(
+            "Perfil atualizado com sucesso! ✅",
+            "success"
+        );
+
+    });
+
+
+    /* =====================================================
+       ENTER
+       ===================================================== */
+
+    nomeInput.addEventListener("keydown", event => {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            salvarButton.click();
+
+        }
+
+    });
+
+
+    /* =====================================================
+       CARREGAR PERFIL
+       ===================================================== */
+
+    function carregarPerfil() {
+
+        let usuario = {};
+
+        try {
+
+            usuario =
+                JSON.parse(
+                    localStorage.getItem("hunter_user")
+                ) || {};
+
+        } catch (error) {
+
+            usuario = {};
+
+        }
+
+
+        if (usuario.name) {
+
+            nomeInput.value =
+                usuario.name;
+
+        }
+
     }
 
-    function showMessage(text, type) {
-        if (!message) return;
 
-        message.textContent = text;
-        message.className = "profile-message";
-        message.classList.add(type);
+    /* =====================================================
+       MENSAGEM
+       ===================================================== */
+
+    function mostrarMensagem(texto, tipo) {
+
+        mensagem.textContent =
+            texto;
+
+        mensagem.classList.remove(
+            "hidden",
+            "success",
+            "error"
+        );
+
+
+        if (tipo) {
+
+            mensagem.classList.add(
+                tipo
+            );
+
+        }
+
+
+        setTimeout(() => {
+
+            mensagem.classList.add(
+                "hidden"
+            );
+
+        }, 3500);
+
     }
+
 });

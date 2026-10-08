@@ -1,77 +1,140 @@
 /* =========================================================
    HUNTER IA — HUNTER.JS
-   Chat principal do Hunter IA
+   Chat inteligente com resposta natural
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
+    const chatMessages =
+        document.getElementById("hunter-chat-messages");
+
     const chatForm =
         document.getElementById("hunter-chat-form");
 
-    const input =
+    const chatInput =
         document.getElementById("hunter-chat-input");
-
-    const messages =
-        document.getElementById("hunter-chat-messages");
 
     const sendButton =
         document.getElementById("hunter-send-button");
 
-    const suggestions =
-        document.querySelectorAll(".hunter-suggestion");
 
-
-    if (!chatForm || !input || !messages) return;
+    if (
+        !chatMessages ||
+        !chatForm ||
+        !chatInput ||
+        !sendButton
+    ) {
+        return;
+    }
 
 
     /* =====================================================
-       CONFIGURAÇÃO
+       LOGO DO HUNTER
        ===================================================== */
 
-    const HUNTER_LOGO =
+    const hunterLogo =
         "assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg";
 
 
     /* =====================================================
-       ENVIA MENSAGEM
+       ENVIO DA MENSAGEM
        ===================================================== */
 
     chatForm.addEventListener("submit", event => {
 
         event.preventDefault();
 
-        sendMessage();
+        const mensagem =
+            chatInput.value.trim();
+
+
+        if (!mensagem) return;
+
+
+        adicionarMensagem(
+            mensagem,
+            "user"
+        );
+
+
+        chatInput.value = "";
+
+        ajustarTextarea();
+
+
+        /* Desativa enquanto o Hunter responde */
+
+        chatInput.disabled = true;
+        sendButton.disabled = true;
+
+
+        const typing =
+            mostrarDigitando();
+
+
+        /*
+         * Pequeno atraso para deixar a conversa
+         * mais natural.
+         */
+
+        setTimeout(() => {
+
+            removerDigitando(typing);
+
+
+            const resposta =
+                gerarResposta(mensagem);
+
+
+            adicionarMensagem(
+                resposta,
+                "hunter"
+            );
+
+
+            chatInput.disabled = false;
+            sendButton.disabled = false;
+
+            chatInput.focus();
+
+
+        }, 2000);
 
     });
 
 
     /* =====================================================
-       BOTÕES DE SUGESTÃO
+       SUGESTÕES
        ===================================================== */
 
-    suggestions.forEach(button => {
+    document.querySelectorAll(".hunter-suggestion")
+        .forEach(button => {
 
-        button.addEventListener("click", () => {
+            button.addEventListener("click", () => {
 
-            const prompt =
-                button.dataset.prompt || "";
+                const texto =
+                    button.textContent.trim();
 
-            if (!prompt) return;
 
-            input.value = prompt;
+                if (!texto) return;
 
-            sendMessage();
+
+                chatInput.value =
+                    texto;
+
+
+                chatForm.requestSubmit();
+
+            });
 
         });
 
-    });
-
 
     /* =====================================================
-       ENTER PARA ENVIAR
+       ENTER
        ===================================================== */
 
-    input.addEventListener("keydown", event => {
+    chatInput.addEventListener("keydown", event => {
 
         if (
             event.key === "Enter" &&
@@ -80,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             event.preventDefault();
 
-            sendMessage();
+            chatForm.requestSubmit();
 
         }
 
@@ -88,163 +151,145 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       AJUSTA ALTURA DO TEXTAREA
+       ALTURA AUTOMÁTICA
        ===================================================== */
 
-    input.addEventListener("input", () => {
-
-        input.style.height = "auto";
-
-        input.style.height =
-            Math.min(input.scrollHeight, 120) + "px";
-
-    });
+    chatInput.addEventListener(
+        "input",
+        ajustarTextarea
+    );
 
 
-    /* =====================================================
-       FUNÇÃO PRINCIPAL
-       ===================================================== */
+    function ajustarTextarea() {
 
-    function sendMessage() {
+        chatInput.style.height =
+            "auto";
 
-        const text =
-            input.value.trim();
-
-        if (!text) return;
-
-
-        addUserMessage(text);
-
-        input.value = "";
-        input.style.height = "auto";
-
-        setLoading(true);
-
-
-        setTimeout(() => {
-
-            const response =
-                generateHunterResponse(text);
-
-            addHunterMessage(response);
-
-            setLoading(false);
-
-        }, 700);
+        chatInput.style.height =
+            Math.min(
+                chatInput.scrollHeight,
+                150
+            ) + "px";
 
     }
 
 
     /* =====================================================
-       MENSAGEM DO USUÁRIO
+       ADICIONAR MENSAGEM
        ===================================================== */
 
-    function addUserMessage(text) {
+    function adicionarMensagem(
+        texto,
+        tipo
+    ) {
 
-        const message =
+        const mensagem =
             document.createElement("div");
 
-        message.className =
-            "hunter-message user";
+
+        mensagem.className =
+            `hunter-message ${tipo}`;
 
 
-        const avatar =
-            document.createElement("div");
+        if (tipo === "hunter") {
 
-        avatar.className =
-            "hunter-avatar";
+            mensagem.innerHTML = `
+                <div class="hunter-message-avatar">
+                    <img
+                        src="${hunterLogo}"
+                        alt="Hunter IA"
+                    >
+                </div>
 
-        avatar.textContent =
-            getUserInitial();
+                <div class="hunter-message-content">
+                    ${formatarTexto(texto)}
+                </div>
+            `;
+
+        } else {
+
+            mensagem.innerHTML = `
+                <div class="hunter-message-content">
+                    ${formatarTexto(texto)}
+                </div>
+            `;
+
+        }
 
 
-        const content =
-            document.createElement("div");
-
-        content.className =
-            "hunter-message-content";
-
-        content.textContent =
-            text;
+        chatMessages.appendChild(
+            mensagem
+        );
 
 
-        message.appendChild(avatar);
-        message.appendChild(content);
-
-        messages.appendChild(message);
-
-        scrollChat();
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: "smooth"
+        });
 
     }
 
 
     /* =====================================================
-       MENSAGEM DO HUNTER
+       INDICADOR DE DIGITAÇÃO
        ===================================================== */
 
-    function addHunterMessage(text) {
+    function mostrarDigitando() {
 
-        const message =
+        const elemento =
             document.createElement("div");
 
-        message.className =
-            "hunter-message ai";
+
+        elemento.className =
+            "hunter-message hunter typing-message";
 
 
-        const avatar =
-            document.createElement("div");
+        elemento.innerHTML = `
+            <div class="hunter-message-avatar">
+                <img
+                    src="${hunterLogo}"
+                    alt="Hunter IA"
+                >
+            </div>
 
-        avatar.className =
-            "hunter-avatar";
-
-
-        const image =
-            document.createElement("img");
-
-        image.src =
-            HUNTER_LOGO;
-
-        image.alt =
-            "Hunter IA";
-
-
-        avatar.appendChild(image);
+            <div class="hunter-message-content hunter-typing">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
 
 
-        const content =
-            document.createElement("div");
-
-        content.className =
-            "hunter-message-content";
+        chatMessages.appendChild(
+            elemento
+        );
 
 
-        /* Permite algumas quebras de linha */
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: "smooth"
+        });
 
-        content.innerHTML =
-            formatResponse(text);
 
-
-        message.appendChild(avatar);
-        message.appendChild(content);
-
-        messages.appendChild(message);
-
-        scrollChat();
+        return elemento;
 
     }
 
 
     /* =====================================================
-       FORMATA RESPOSTA
+       REMOVER DIGITAÇÃO
        ===================================================== */
 
-    function formatResponse(text) {
+    function removerDigitando(elemento) {
 
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\n/g, "<br>");
+        if (elemento && elemento.parentNode) {
+
+            elemento.parentNode.removeChild(
+                elemento
+            );
+
+        }
+
     }
 
 
@@ -252,326 +297,234 @@ document.addEventListener("DOMContentLoaded", () => {
        RESPOSTAS DO HUNTER
        ===================================================== */
 
-    function generateHunterResponse(text) {
+    function gerarResposta(mensagem) {
 
-        const message =
-            text.toLowerCase();
+        const texto =
+            mensagem.toLowerCase();
 
-
-        /* Primeira venda */
 
         if (
-            message.includes("primeira venda") ||
-            message.includes("primeiro cliente") ||
-            message.includes("começar a vender")
+            texto.includes("primeira venda") ||
+            texto.includes("primeiro cliente")
         ) {
 
-            return `Se o objetivo é conseguir sua primeira venda rapidamente, eu faria assim:
+            return `Se o objetivo é fazer sua primeira venda, eu focaria em uma oferta simples e fácil de entregar.
 
-1. Escolha um serviço simples de entregar.
-2. Procure empresas que realmente tenham um problema.
-3. Faça uma abordagem curta e personalizada.
-4. Mostre o problema que você encontrou.
-5. Ofereça uma solução objetiva.
-6. Tente levar a conversa para uma ligação ou reunião.
+Por exemplo:
 
-Para começar, uma landing page é uma ótima oferta porque é simples de explicar e pode ser entregue rapidamente.
+• Landing Page
+• Site institucional simples
+• Página de vendas
+• Otimização de presença digital
 
-Se quiser, posso montar agora uma abordagem para você mandar para um cliente.`;
+Escolha um serviço, encontre empresas que realmente precisam dele e faça uma abordagem personalizada.
+
+O mais importante agora não é criar a oferta perfeita.
+
+É conseguir conversar com potenciais clientes e apresentar uma solução real.`;
 
         }
 
 
-        /* Abordagem */
-
         if (
-            message.includes("abordagem") ||
-            message.includes("mensagem para cliente") ||
-            message.includes("mensagem profissional")
+            texto.includes("abordagem") ||
+            texto.includes("mensagem para cliente")
         ) {
 
-            return `Claro. Uma abordagem simples e profissional seria:
-
-"Olá, tudo bem? Meu nome é João Pedro. Vi o trabalho de vocês e gostei bastante do que estão fazendo. Percebi uma oportunidade que pode ajudar vocês a conseguir ainda mais clientes pela internet. Trabalho com criação de páginas profissionais e gostaria de mostrar uma ideia rápida para vocês. Podemos marcar uma conversa ou uma ligação?"`;
-
-        }
-
-
-        /* Estratégia */
-
-        if (
-            message.includes("estratégia") ||
-            message.includes("estrategia") ||
-            message.includes("vender mais")
-        ) {
-
-            return `Eu focaria em três coisas:
-
-• Prospecção diária
-• Abordagem personalizada
-• Follow-up
-
-Uma meta simples para começar:
-
-10 novos contatos por dia → 5 conversas → 2 oportunidades → 1 venda.
-
-O segredo é não tentar vender para todo mundo. Encontre empresas que realmente tenham um problema que seu serviço resolve.`;
-
-        }
-
-
-        /* Oferta */
-
-        if (
-            message.includes("oferta") ||
-            message.includes("proposta")
-        ) {
-
-            return `Uma boa oferta precisa deixar três coisas muito claras:
-
-O que você entrega.
-Qual problema você resolve.
-Por que vale a pena comprar agora.
+            return `Eu faria uma abordagem curta e personalizada.
 
 Exemplo:
 
-"Landing Page Profissional para transformar visitantes em clientes.
+"Olá, tudo bem? Meu nome é João Pedro. Estive conhecendo um pouco o trabalho de vocês e gostei bastante do que fazem.
 
-✓ Página personalizada
-✓ Design profissional
-✓ Botão de WhatsApp
-✓ Estrutura focada em conversão
+Percebi uma oportunidade que pode ajudar o negócio de vocês a conseguir ainda mais clientes.
 
-Ideal para empresas que querem receber mais contatos pela internet."
+Eu trabalho com soluções digitais e queria te mostrar uma ideia rápida. Podemos conversar por alguns minutos?"
 
-Se quiser, posso montar uma oferta completa baseada no seu serviço.`;
+O segredo é não tentar vender tudo na primeira mensagem. Primeiro consiga a conversa.`;
 
         }
 
 
-        /* Preço */
-
         if (
-            message.includes("preço") ||
-            message.includes("preco") ||
-            message.includes("quanto cobrar") ||
-            message.includes("valor")
+            texto.includes("caro") ||
+            texto.includes("está caro") ||
+            texto.includes("ta caro")
         ) {
 
-            return `Para definir seu preço, primeiro precisamos entender:
+            return `Se o cliente disser que está caro, não tente dar desconto imediatamente.
 
-• O que você vai entregar
-• Quanto tempo vai gastar
-• Seu custo
-• O valor percebido pelo cliente
-• O nível de dificuldade
+Você pode responder:
 
-Se você está buscando sua primeira venda, pode começar com uma oferta de entrada mais acessível, conseguir o primeiro cliente e depois aumentar seu preço conforme cria portfólio e resultados.`;
+"Entendo. Para eu conseguir te orientar melhor, o que exatamente fez você considerar o investimento alto?"
+
+Assim você descobre se o problema realmente é preço ou se o cliente ainda não percebeu o valor da solução.
+
+Depois disso, mostre o resultado que seu serviço pode gerar.`;
 
         }
 
 
-        /* Landing page */
-
         if (
-            message.includes("landing page") ||
-            message.includes("landingpage")
+            texto.includes("não tenho interesse") ||
+            texto.includes("nao tenho interesse")
         ) {
 
-            return `Uma landing page é uma página única criada com um objetivo específico, normalmente gerar contatos, pedidos de orçamento ou vendas.
+            return `Não pressione.
 
-Para prospectar empresas, ela pode ser uma ótima oferta porque é mais rápida de produzir do que um site completo e é fácil de demonstrar ao cliente.
+Você pode responder:
 
-Se você quiser, posso te ajudar a montar uma oferta de landing page por um preço de entrada.`;
+"Tranquilo, sem problema! Só para eu entender melhor, hoje vocês já possuem alguma solução para essa necessidade ou simplesmente não é uma prioridade no momento?"
+
+Essa pergunta pode revelar uma oportunidade sem parecer insistente.`;
 
         }
 
 
-        /* Cliente não responde */
-
         if (
-            message.includes("não responde") ||
-            message.includes("nao responde") ||
-            message.includes("sumiu")
+            texto.includes("não responde") ||
+            texto.includes("nao responde")
         ) {
 
-            return `Não desista depois da primeira mensagem.
+            return `Se o cliente não respondeu, não mande várias mensagens seguidas.
 
-Faça um follow-up curto e sem pressionar:
+Faça um follow-up simples depois de algum tempo:
 
-"Olá! Passando só para saber se conseguiu ver minha mensagem anterior. Identifiquei uma oportunidade que pode ser interessante para vocês. Se quiser, posso te explicar rapidamente como funcionaria."
+"Olá! Passando só para saber se conseguiu ver minha mensagem. Caso faça sentido para vocês, posso te explicar a ideia rapidamente."
 
-Se ainda não responder, siga para o próximo prospecto e tente novamente depois.`;
+Se mesmo assim não houver resposta, siga para o próximo prospect.`;
 
         }
 
 
-        /* Cliente achou caro */
-
         if (
-            message.includes("caro") ||
-            message.includes("muito caro") ||
-            message.includes("sem dinheiro")
+            texto.includes("landing page") ||
+            texto.includes("landingpage")
         ) {
 
-            return `Não tente simplesmente dar desconto.
+            return `Uma Landing Page pode ser uma ótima oferta para começar porque é mais simples de explicar e entregar do que um projeto grande.
 
-Primeiro descubra o motivo:
+Você pode vender a ideia assim:
 
-"Entendo. O que ficou mais pesado para vocês: o investimento ou o momento atual?"
+"Uma página criada especificamente para transformar visitantes em contatos e oportunidades para o seu negócio."
 
-Assim você descobre se o problema realmente é preço.
+Não venda apenas "uma página".
 
-Se for necessário, você pode criar uma versão mais simples da solução com um valor de entrada menor.`;
+Venda o objetivo dela: gerar mais contatos e oportunidades.`;
 
         }
 
 
-        /* Cliente diz não */
-
         if (
-            message.includes("não quero") ||
-            message.includes("nao quero") ||
-            message.includes("não tenho interesse") ||
-            message.includes("nao tenho interesse")
+            texto.includes("preço") ||
+            texto.includes("quanto cobrar") ||
+            texto.includes("quanto custa")
         ) {
 
-            return `Você pode responder:
+            return `Não defina seu preço olhando apenas para o tempo que você vai gastar.
 
-"Tranquilo, sem problema! Só por curiosidade, hoje vocês já têm alguma estratégia para conseguir novos clientes pela internet?"
+Considere:
 
-Isso transforma um "não" em uma oportunidade para entender melhor o cliente.
+• Complexidade
+• Prazo
+• Número de páginas
+• Revisões
+• Manutenção
+• Valor para o cliente
+• Resultado esperado
 
-Mas lembre: não pressione. Se a pessoa realmente não tiver interesse, agradeça e siga para o próximo contato.`;
+Uma Landing Page simples, por exemplo, pode ter um preço inicial acessível enquanto você conquista seus primeiros clientes e aumenta seu portfólio.`;
 
         }
 
 
-        /* Saudação */
+        if (
+            texto.includes("estratégia") ||
+            texto.includes("estrategia")
+        ) {
+
+            return `Eu faria assim:
+
+1. Escolha um serviço simples.
+2. Encontre empresas que realmente precisam dele.
+3. Analise rapidamente cada negócio.
+4. Personalize sua abordagem.
+5. Inicie uma conversa.
+6. Descubra o problema.
+7. Apresente sua solução.
+8. Tente marcar uma ligação ou reunião.
+
+O objetivo não é mandar 100 mensagens genéricas.
+
+É encontrar bons prospects e conversar com eles de forma inteligente.`;
+
+        }
+
 
         if (
-            message === "oi" ||
-            message === "olá" ||
-            message === "ola" ||
-            message.includes("bom dia") ||
-            message.includes("boa tarde") ||
-            message.includes("boa noite")
+            texto.includes("oferta") ||
+            texto.includes("vender")
+        ) {
+
+            return `Uma boa oferta precisa responder três coisas:
+
+1. Qual problema você resolve?
+2. Como você resolve?
+3. Qual benefício o cliente recebe?
+
+Por exemplo:
+
+"Eu crio Landing Pages profissionais para empresas que querem transformar visitantes em novos contatos pelo WhatsApp."
+
+Isso é muito mais forte do que simplesmente dizer:
+
+"Eu faço sites."`;
+
+        }
+
+
+        if (
+            texto.includes("oi") ||
+            texto.includes("olá") ||
+            texto.includes("ola") ||
+            texto.includes("bom dia") ||
+            texto.includes("boa tarde") ||
+            texto.includes("boa noite")
         ) {
 
             return `Olá! 👋
 
-Sou o Hunter IA, seu assistente para vendas e negócios.
+Estou pronto para te ajudar.
 
-Posso ajudar você com:
-
-• Prospecção
-• Abordagens
-• Follow-ups
-• Objeções
-• Ofertas
-• Preços
-• Estratégias de vendas
-
-Me diga o que você precisa e vamos trabalhar nisso. 🚀`;
+Pode me falar o que você precisa: estratégia de vendas, abordagem de clientes, preço, oferta, negociação ou qualquer outra coisa relacionada ao seu negócio.`;
 
         }
 
 
-        /* Resposta padrão */
+        return `Entendi.
 
-        return `Entendi. 👊
+Vamos pensar nisso de forma estratégica.
 
-Posso te ajudar a transformar isso em uma estratégia prática de vendas.
+Me conte um pouco mais sobre a situação ou sobre o que você está tentando conseguir.
 
-Tente me perguntar algo como:
+Quanto mais contexto você me passar, melhor eu consigo te orientar.
 
-• "Como consigo minha primeira venda?"
-• "Crie uma abordagem para uma clínica."
-• "O cliente disse que está caro. O que respondo?"
-• "Me ajude a criar uma oferta."
-• "Quanto devo cobrar por uma landing page?"
-
-Quanto mais contexto você me passar, melhor consigo estruturar a estratégia.`;
+Estou aqui para pensar junto com você.`;
 
     }
 
 
     /* =====================================================
-       LOADING
+       FORMATAR TEXTO
        ===================================================== */
 
-    function setLoading(loading) {
+    function formatarTexto(texto) {
 
-        if (!sendButton) return;
-
-        sendButton.disabled =
-            loading;
-
-        if (loading) {
-
-            sendButton.textContent =
-                "…";
-
-            sendButton.style.opacity =
-                "0.6";
-
-        } else {
-
-            sendButton.textContent =
-                "➤";
-
-            sendButton.style.opacity =
-                "1";
-
-        }
-
-    }
-
-
-    /* =====================================================
-       SCROLL
-       ===================================================== */
-
-    function scrollChat() {
-
-        requestAnimationFrame(() => {
-
-            messages.scrollTop =
-                messages.scrollHeight;
-
-        });
-
-    }
-
-
-    /* =====================================================
-       INICIAL
-       ===================================================== */
-
-    function getUserInitial() {
-
-        try {
-
-            const user =
-                JSON.parse(
-                    localStorage.getItem(
-                        "hunter_user"
-                    )
-                ) || {};
-
-            return (
-                user.name
-                    ?.trim()
-                    .charAt(0)
-                    .toUpperCase()
-                || "V"
-            );
-
-        } catch {
-
-            return "V";
-
-        }
+        return texto
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\n/g, "<br>");
 
     }
 

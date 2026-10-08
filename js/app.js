@@ -1,6 +1,6 @@
 /* =========================================================
    HUNTER IA — APP.JS
-   Fluxo principal + navegação + menu mobile
+   Navegação + Menu Mobile + Usuário
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,31 +14,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const mobileMenuButton =
         document.getElementById("mobile-menu-button");
 
+    const navItems =
+        document.querySelectorAll("[data-page]");
 
     /* =====================================================
-       ENTRADA DO SISTEMA
+       INICIALIZAÇÃO
        ===================================================== */
 
-    function startHunter() {
+    setTimeout(() => {
 
-        // Esconde o Splash
         if (splash) {
+
             splash.classList.add("fade-out");
 
             setTimeout(() => {
                 splash.style.display = "none";
-            }, 550);
+            }, 500);
         }
 
-
-        // Verifica se existe sessão
         const loggedIn =
             localStorage.getItem("hunter_logged_in") === "true";
 
-
         if (loggedIn) {
 
-            // Usuário já entrou anteriormente
             if (loginScreen) {
                 loginScreen.classList.add("hidden");
             }
@@ -48,12 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             loadUser();
-
             navigateTo("dashboard");
 
         } else {
 
-            // Primeiro acesso
             if (app) {
                 app.classList.add("hidden");
             }
@@ -62,24 +58,152 @@ document.addEventListener("DOMContentLoaded", () => {
                 loginScreen.classList.remove("hidden");
             }
         }
-    }
 
-
-    /*
-       Aguarda o Splash terminar
-    */
-    setTimeout(startHunter, 1800);
+    }, 1800);
 
 
     /* =====================================================
-       NAVEGAÇÃO
+       NAVEGAÇÃO DO MENU
+       ===================================================== */
+
+    navItems.forEach(item => {
+
+        item.addEventListener("click", event => {
+
+            event.preventDefault();
+
+            const page = item.dataset.page;
+
+            if (!page) return;
+
+            navigateTo(page);
+            closeMobileMenu();
+
+        });
+
+    });
+
+
+    /* =====================================================
+       CARDS DO DASHBOARD
+       ===================================================== */
+
+    document.querySelectorAll(".tool-card").forEach(card => {
+
+        card.addEventListener("click", () => {
+
+            const page = card.dataset.page;
+
+            if (!page) return;
+
+            navigateTo(page);
+
+        });
+
+    });
+
+
+    /* =====================================================
+       MENU MOBILE
+       ===================================================== */
+
+    if (mobileMenuButton) {
+
+        mobileMenuButton.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            toggleMobileMenu();
+
+        });
+
+    }
+
+
+    if (overlay) {
+
+        overlay.addEventListener("click", () => {
+
+            closeMobileMenu();
+
+        });
+
+    }
+
+
+    document.addEventListener("keydown", event => {
+
+        if (event.key === "Escape") {
+            closeMobileMenu();
+        }
+
+    });
+
+
+    /* =====================================================
+       ABRIR MENU
+       ===================================================== */
+
+    function openMobileMenu() {
+
+        if (!sidebar) return;
+
+        sidebar.classList.add("mobile-open");
+
+        if (overlay) {
+            overlay.classList.add("visible");
+        }
+
+        document.body.style.overflow = "hidden";
+    }
+
+
+    /* =====================================================
+       FECHAR MENU
+       ===================================================== */
+
+    function closeMobileMenu() {
+
+        if (!sidebar) return;
+
+        sidebar.classList.remove("mobile-open");
+
+        if (overlay) {
+            overlay.classList.remove("visible");
+        }
+
+        document.body.style.overflow = "";
+    }
+
+
+    /* =====================================================
+       ALTERNAR MENU
+       ===================================================== */
+
+    function toggleMobileMenu() {
+
+        if (!sidebar) return;
+
+        const isOpen =
+            sidebar.classList.contains("mobile-open");
+
+        if (isOpen) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+    }
+
+
+    /* =====================================================
+       NAVEGAR ENTRE PÁGINAS
        ===================================================== */
 
     function navigateTo(pageName) {
 
         const pages =
             document.querySelectorAll(".page");
-
 
         pages.forEach(page => {
 
@@ -90,283 +214,136 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const targetPage =
-            document.getElementById(
-                `page-${pageName}`
-            );
+            document.getElementById(`page-${pageName}`);
 
-
-        if (!targetPage) {
-
-            console.error(
-                "Hunter IA: página não encontrada:",
-                pageName
-            );
-
-            return;
-        }
+        if (!targetPage) return;
 
 
         targetPage.classList.remove("hidden-page");
         targetPage.classList.add("active-page");
 
 
-        // Atualiza menu
+        /* Atualiza menu */
+
         document
             .querySelectorAll(".nav-item")
             .forEach(item => {
 
                 item.classList.remove("active");
 
-                if (
-                    item.dataset.page === pageName
-                ) {
+                if (item.dataset.page === pageName) {
                     item.classList.add("active");
                 }
 
             });
 
 
-        // Breadcrumb
-        const breadcrumb =
-            document.getElementById(
-                "page-breadcrumb"
-            );
+        /* Atualiza breadcrumb */
 
+        const breadcrumb =
+            document.getElementById("page-breadcrumb");
 
         if (breadcrumb) {
 
             const names = {
 
-                dashboard: "Dashboard",
+                dashboard:
+                    "Dashboard",
 
-                hunter: "Hunter IA",
+                hunter:
+                    "Hunter IA",
 
-                vendedor: "Vendedor IA",
+                vendedor:
+                    "Vendedor IA",
 
-                calculadora: "Calculadora",
+                calculadora:
+                    "Calculadora",
 
-                ofertas: "Gerador de Ofertas",
+                ofertas:
+                    "Gerador de Ofertas",
 
-                treinador: "Treinador de Vendas",
+                treinador:
+                    "Treinador de Vendas",
 
-                perfil: "Meu Perfil"
+                perfil:
+                    "Meu Perfil"
 
             };
-
 
             breadcrumb.textContent =
                 names[pageName] || "Hunter IA";
         }
 
 
+        /* Volta para o topo */
+
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
+
     }
 
 
     /* =====================================================
-       LINKS / BOTÕES DE NAVEGAÇÃO
-       ===================================================== */
-
-    document
-        .querySelectorAll("[data-page]")
-        .forEach(item => {
-
-            item.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-
-                    const page =
-                        item.dataset.page;
-
-                    if (!page) return;
-
-                    navigateTo(page);
-
-                    closeMobileMenu();
-
-                }
-            );
-
-        });
-
-
-    /* =====================================================
-       MENU MOBILE
-       ===================================================== */
-
-    function openMobileMenu() {
-
-        if (!sidebar) return;
-
-        sidebar.classList.add(
-            "mobile-open"
-        );
-
-
-        if (overlay) {
-
-            overlay.classList.add(
-                "visible"
-            );
-        }
-
-
-        document.body.style.overflow =
-            "hidden";
-    }
-
-
-    function closeMobileMenu() {
-
-        if (!sidebar) return;
-
-        sidebar.classList.remove(
-            "mobile-open"
-        );
-
-
-        if (overlay) {
-
-            overlay.classList.remove(
-                "visible"
-            );
-        }
-
-
-        document.body.style.overflow =
-            "";
-    }
-
-
-    function toggleMobileMenu() {
-
-        if (!sidebar) return;
-
-
-        const opened =
-            sidebar.classList.contains(
-                "mobile-open"
-            );
-
-
-        if (opened) {
-
-            closeMobileMenu();
-
-        } else {
-
-            openMobileMenu();
-
-        }
-    }
-
-
-    if (mobileMenuButton) {
-
-        mobileMenuButton.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                toggleMobileMenu();
-
-            }
-        );
-
-    }
-
-
-    if (overlay) {
-
-        overlay.addEventListener(
-            "click",
-            closeMobileMenu
-        );
-
-    }
-
-
-    document.addEventListener(
-        "keydown",
-        event => {
-
-            if (event.key === "Escape") {
-                closeMobileMenu();
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       USUÁRIO
+       CARREGAR USUÁRIO
        ===================================================== */
 
     function loadUser() {
 
         let user = {};
 
-
         try {
 
             user =
                 JSON.parse(
-                    localStorage.getItem(
-                        "hunter_user"
-                    )
+                    localStorage.getItem("hunter_user")
                 ) || {};
 
         } catch (error) {
 
-            console.error(
-                "Erro ao carregar usuário:",
-                error
-            );
-
             user = {};
+
         }
 
 
         const name =
-            user.name || "Vendedor";
+            user.name ||
+            "Vendedor";
 
 
-        // Dashboard
+        /* Dashboard */
+
         const dashboardName =
             document.getElementById(
                 "dashboard-user-name"
             );
 
-
         if (dashboardName) {
 
             dashboardName.textContent =
                 `Olá, ${name}`;
+
         }
 
 
-        // Nome no topo
+        /* Topbar */
+
         const topbarName =
             document.getElementById(
                 "topbar-user-name"
             );
 
-
         if (topbarName) {
 
             topbarName.textContent =
                 name;
+
         }
 
 
-        // Inicial
+        /* Inicial */
+
         const initial =
             name
                 .trim()
@@ -374,46 +351,57 @@ document.addEventListener("DOMContentLoaded", () => {
                 .toUpperCase() || "V";
 
 
+        /* Avatar topbar */
+
         const avatar =
             document.getElementById(
                 "profile-avatar"
             );
 
-
         if (avatar) {
-            avatar.textContent = initial;
+
+            avatar.textContent =
+                initial;
+
         }
 
+
+        /* Avatar grande */
 
         const largeAvatar =
             document.getElementById(
                 "profile-large-avatar"
             );
 
-
         if (largeAvatar) {
+
             largeAvatar.textContent =
                 initial;
+
         }
 
+
+        /* Nome do perfil */
 
         const profileDisplay =
             document.getElementById(
                 "profile-display-name"
             );
 
-
         if (profileDisplay) {
+
             profileDisplay.textContent =
                 name;
+
         }
 
+
+        /* Input do perfil */
 
         const profileName =
             document.getElementById(
                 "profile-name"
             );
-
 
         if (
             profileName &&
@@ -422,53 +410,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
             profileName.value =
                 name;
+
         }
+
     }
 
 
     /* =====================================================
-       MOSTRAR APP
-       ===================================================== */
-
-    function showApp() {
-
-        if (splash) {
-            splash.style.display =
-                "none";
-        }
-
-
-        if (loginScreen) {
-
-            loginScreen.classList.add(
-                "hidden"
-            );
-        }
-
-
-        if (app) {
-
-            app.classList.remove(
-                "hidden"
-            );
-        }
-
-
-        loadUser();
-
-        navigateTo("dashboard");
-    }
-
-
-    /* =====================================================
-       API INTERNA
+       API PÚBLICA DO HUNTER IA
        ===================================================== */
 
     window.HunterApp = {
 
         navigateTo,
 
-        showApp,
+        showApp: () => {
+
+            if (loginScreen) {
+                loginScreen.classList.add("hidden");
+            }
+
+            if (app) {
+                app.classList.remove("hidden");
+            }
+
+            loadUser();
+            navigateTo("dashboard");
+
+        },
 
         loadUser,
 
@@ -477,6 +446,5 @@ document.addEventListener("DOMContentLoaded", () => {
         closeMobileMenu
 
     };
-
 
 });

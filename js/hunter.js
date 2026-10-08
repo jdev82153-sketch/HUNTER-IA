@@ -1,89 +1,90 @@
 /* =========================================================
    HUNTER IA — HUNTER.JS
-   Chat inteligente com resposta natural
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const chatMessages =
-        document.getElementById("hunter-chat-messages");
+    const messages =
+        document.getElementById(
+            "hunter-chat-messages"
+        );
 
-    const chatForm =
-        document.getElementById("hunter-chat-form");
+    const form =
+        document.getElementById(
+            "hunter-chat-form"
+        );
 
-    const chatInput =
-        document.getElementById("hunter-chat-input");
+    const input =
+        document.getElementById(
+            "hunter-chat-input"
+        );
 
-    const sendButton =
-        document.getElementById("hunter-send-button");
+    const send =
+        document.getElementById(
+            "hunter-send-button"
+        );
 
 
-    if (
-        !chatMessages ||
-        !chatForm ||
-        !chatInput ||
-        !sendButton
-    ) {
+    if (!messages || !form || !input || !send) {
         return;
     }
 
 
-    /* =====================================================
-       LOGO DO HUNTER
-       ===================================================== */
-
-    const hunterLogo =
+    const logo =
         "assets/52C03B7F-4B7E-42D5-88BD-0737E812BE9D.jpeg";
 
 
+    let nome =
+        carregarNome();
+
+
     /* =====================================================
-       ENVIO DA MENSAGEM
+       ENVIO
        ===================================================== */
 
-    chatForm.addEventListener("submit", event => {
+    form.addEventListener(
+        "submit",
+        async event => {
 
-        event.preventDefault();
-
-        const mensagem =
-            chatInput.value.trim();
-
-
-        if (!mensagem) return;
+            event.preventDefault();
 
 
-        adicionarMensagem(
-            mensagem,
-            "user"
-        );
+            const texto =
+                input.value.trim();
 
 
-        chatInput.value = "";
-
-        ajustarTextarea();
+            if (!texto) return;
 
 
-        /* Desativa enquanto o Hunter responde */
-
-        chatInput.disabled = true;
-        sendButton.disabled = true;
-
-
-        const typing =
-            mostrarDigitando();
+            adicionarMensagem(
+                texto,
+                "user"
+            );
 
 
-        /*
-         * Pequeno atraso para deixar a conversa
-         * mais natural.
-         */
+            input.value = "";
 
-        setTimeout(() => {
+            ajustarInput();
 
-            removerDigitando(typing);
+
+            input.disabled = true;
+            send.disabled = true;
+
+
+            const typing =
+                mostrarDigitando();
+
+
+            await esperar(1800);
+
+
+            removerDigitando(
+                typing
+            );
 
 
             const resposta =
-                gerarResposta(mensagem);
+                responder(texto);
 
 
             adicionarMensagem(
@@ -92,40 +93,36 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            chatInput.disabled = false;
-            sendButton.disabled = false;
+            input.disabled = false;
+            send.disabled = false;
 
-            chatInput.focus();
+            input.focus();
 
-
-        }, 2000);
-
-    });
+        }
+    );
 
 
     /* =====================================================
        SUGESTÕES
        ===================================================== */
 
-    document.querySelectorAll(".hunter-suggestion")
+    document
+        .querySelectorAll(
+            ".hunter-suggestion"
+        )
         .forEach(button => {
 
-            button.addEventListener("click", () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                const texto =
-                    button.textContent.trim();
+                    input.value =
+                        button.textContent.trim();
 
+                    form.requestSubmit();
 
-                if (!texto) return;
-
-
-                chatInput.value =
-                    texto;
-
-
-                chatForm.requestSubmit();
-
-            });
+                }
+            );
 
         });
 
@@ -134,239 +131,393 @@ document.addEventListener("DOMContentLoaded", () => {
        ENTER
        ===================================================== */
 
-    chatInput.addEventListener("keydown", event => {
+    input.addEventListener(
+        "keydown",
+        event => {
 
-        if (
-            event.key === "Enter" &&
-            !event.shiftKey
-        ) {
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
 
-            event.preventDefault();
+                event.preventDefault();
 
-            chatForm.requestSubmit();
+                form.requestSubmit();
+
+            }
 
         }
-
-    });
-
-
-    /* =====================================================
-       ALTURA AUTOMÁTICA
-       ===================================================== */
-
-    chatInput.addEventListener(
-        "input",
-        ajustarTextarea
     );
 
 
-    function ajustarTextarea() {
-
-        chatInput.style.height =
-            "auto";
-
-        chatInput.style.height =
-            Math.min(
-                chatInput.scrollHeight,
-                150
-            ) + "px";
-
-    }
+    input.addEventListener(
+        "input",
+        ajustarInput
+    );
 
 
     /* =====================================================
-       ADICIONAR MENSAGEM
+       NOME
        ===================================================== */
 
-    function adicionarMensagem(
-        texto,
-        tipo
-    ) {
+    function carregarNome() {
 
-        const mensagem =
-            document.createElement("div");
+        try {
 
-
-        mensagem.className =
-            `hunter-message ${tipo}`;
-
-
-        if (tipo === "hunter") {
-
-            mensagem.innerHTML = `
-                <div class="hunter-message-avatar">
-                    <img
-                        src="${hunterLogo}"
-                        alt="Hunter IA"
-                    >
-                </div>
-
-                <div class="hunter-message-content">
-                    ${formatarTexto(texto)}
-                </div>
-            `;
-
-        } else {
-
-            mensagem.innerHTML = `
-                <div class="hunter-message-content">
-                    ${formatarTexto(texto)}
-                </div>
-            `;
-
-        }
+            const user =
+                JSON.parse(
+                    localStorage.getItem(
+                        "hunter_user"
+                    )
+                ) || {};
 
 
-        chatMessages.appendChild(
-            mensagem
-        );
-
-
-        chatMessages.scrollTo({
-            top: chatMessages.scrollHeight,
-            behavior: "smooth"
-        });
-
-    }
-
-
-    /* =====================================================
-       INDICADOR DE DIGITAÇÃO
-       ===================================================== */
-
-    function mostrarDigitando() {
-
-        const elemento =
-            document.createElement("div");
-
-
-        elemento.className =
-            "hunter-message hunter typing-message";
-
-
-        elemento.innerHTML = `
-            <div class="hunter-message-avatar">
-                <img
-                    src="${hunterLogo}"
-                    alt="Hunter IA"
-                >
-            </div>
-
-            <div class="hunter-message-content hunter-typing">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        `;
-
-
-        chatMessages.appendChild(
-            elemento
-        );
-
-
-        chatMessages.scrollTo({
-            top: chatMessages.scrollHeight,
-            behavior: "smooth"
-        });
-
-
-        return elemento;
-
-    }
-
-
-    /* =====================================================
-       REMOVER DIGITAÇÃO
-       ===================================================== */
-
-    function removerDigitando(elemento) {
-
-        if (elemento && elemento.parentNode) {
-
-            elemento.parentNode.removeChild(
-                elemento
+            return limparNome(
+                user.name
             );
 
+        } catch {
+
+            return "";
+
         }
 
     }
 
 
+    function limparNome(nome) {
+
+        if (!nome) return "";
+
+        return String(nome)
+            .replace(
+                /^olá[\s,]+/i,
+                ""
+            )
+            .replace(
+                /^ola[\s,]+/i,
+                ""
+            )
+            .trim();
+
+    }
+
+
+    function salvarNome(novoNome) {
+
+        try {
+
+            const user =
+                JSON.parse(
+                    localStorage.getItem(
+                        "hunter_user"
+                    )
+                ) || {};
+
+
+            user.name =
+                novoNome;
+
+
+            localStorage.setItem(
+                "hunter_user",
+                JSON.stringify(user)
+            );
+
+
+            nome =
+                novoNome;
+
+        } catch {}
+
+    }
+
+
     /* =====================================================
-       RESPOSTAS DO HUNTER
+       HORÁRIO
        ===================================================== */
 
-    function gerarResposta(mensagem) {
+    function saudacao() {
+
+        const hora =
+            new Date().getHours();
+
+
+        if (hora >= 5 && hora < 12) {
+            return "Bom dia";
+        }
+
+
+        if (hora >= 12 && hora < 18) {
+            return "Boa tarde";
+        }
+
+
+        return "Boa noite";
+
+    }
+
+
+    function periodo() {
+
+        const hora =
+            new Date().getHours();
+
+
+        if (hora >= 5 && hora < 12) {
+            return "esta manhã";
+        }
+
+
+        if (hora >= 12 && hora < 18) {
+            return "esta tarde";
+        }
+
+
+        return "esta noite";
+
+    }
+
+
+    /* =====================================================
+       IDENTIFICAR NOME
+       ===================================================== */
+
+    function identificarNome(texto) {
+
+        const padroes = [
+
+            /meu nome é\s+([a-záàâãéêíóôõúç]+)/i,
+
+            /meu nome e\s+([a-záàâãéêíóôõúç]+)/i,
+
+            /me chamo\s+([a-záàâãéêíóôõúç]+)/i,
+
+            /sou o\s+([a-záàâãéêíóôõúç]+)/i,
+
+            /sou a\s+([a-záàâãéêíóôõúç]+)/i
+
+        ];
+
+
+        for (const padrao of padroes) {
+
+            const resultado =
+                texto.match(padrao);
+
+
+            if (resultado?.[1]) {
+
+                const nomeEncontrado =
+                    resultado[1]
+                        .trim()
+                        .replace(
+                            /[.,!?].*$/,
+                            ""
+                        );
+
+
+                if (
+                    nomeEncontrado.length >= 2 &&
+                    nomeEncontrado.length <= 30
+                ) {
+
+                    return nomeEncontrado
+                        .charAt(0)
+                        .toUpperCase() +
+                        nomeEncontrado
+                            .slice(1)
+                            .toLowerCase();
+
+                }
+
+            }
+
+        }
+
+
+        return "";
+
+    }
+
+
+    /* =====================================================
+       RESPOSTA
+       ===================================================== */
+
+    function responder(textoOriginal) {
 
         const texto =
-            mensagem.toLowerCase();
+            textoOriginal
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(
+                    /[\u0300-\u036f]/g,
+                    ""
+                );
 
+
+        /* Nome */
+
+        const nomeEncontrado =
+            identificarNome(
+                textoOriginal
+            );
+
+
+        if (nomeEncontrado) {
+
+            salvarNome(
+                nomeEncontrado
+            );
+
+
+            return `${saudacao()}, ${nomeEncontrado}! 👋
+
+Prazer em te conhecer.
+
+O que você precisa ${periodo()}?`;
+
+        }
+
+
+        /* Saudação */
+
+        if (
+            texto === "oi" ||
+            texto === "ola" ||
+            texto.includes("oi hunter") ||
+            texto.includes("ola hunter") ||
+            texto.includes("bom dia") ||
+            texto.includes("boa tarde") ||
+            texto.includes("boa noite")
+        ) {
+
+            if (nome) {
+
+                return `${saudacao()}, ${nome}! 👋
+
+O que você precisa ${periodo()}?`;
+
+            }
+
+
+            return `${saudacao()}! 👋
+
+Eu sou o Hunter IA.
+
+O que você precisa ${periodo()}?`;
+
+        }
+
+
+        /* Primeira venda */
 
         if (
             texto.includes("primeira venda") ||
             texto.includes("primeiro cliente")
         ) {
 
-            return `Se o objetivo é fazer sua primeira venda, eu focaria em uma oferta simples e fácil de entregar.
+            return `Se o objetivo é fazer sua primeira venda, eu começaria de forma simples.
 
-Por exemplo:
+Escolha um serviço que você consiga entregar bem, encontre empresas que realmente precisam dele e faça uma abordagem personalizada.
 
-• Landing Page
-• Site institucional simples
-• Página de vendas
-• Otimização de presença digital
+Primeiro consiga a conversa.
 
-Escolha um serviço, encontre empresas que realmente precisam dele e faça uma abordagem personalizada.
+Depois descubra o problema do cliente e apresente a solução.
 
-O mais importante agora não é criar a oferta perfeita.
-
-É conseguir conversar com potenciais clientes e apresentar uma solução real.`;
+Se quiser, posso montar uma estratégia passo a passo para você.`;
 
         }
 
+
+        /* Abordagem */
 
         if (
             texto.includes("abordagem") ||
-            texto.includes("mensagem para cliente")
+            texto.includes("mensagem para cliente") ||
+            texto.includes("o que falar")
         ) {
 
-            return `Eu faria uma abordagem curta e personalizada.
+            return `Eu evitaria uma mensagem muito longa.
 
-Exemplo:
+Uma boa abertura seria:
 
 "Olá, tudo bem? Meu nome é João Pedro. Estive conhecendo um pouco o trabalho de vocês e gostei bastante do que fazem.
 
-Percebi uma oportunidade que pode ajudar o negócio de vocês a conseguir ainda mais clientes.
+Percebi uma oportunidade que pode ajudar o negócio de vocês e queria te mostrar uma ideia rápida.
 
-Eu trabalho com soluções digitais e queria te mostrar uma ideia rápida. Podemos conversar por alguns minutos?"
+Podemos conversar por alguns minutos?"
 
-O segredo é não tentar vender tudo na primeira mensagem. Primeiro consiga a conversa.`;
+Primeiro abra a conversa. Depois venda.`;
 
         }
 
 
+        /* Landing Page */
+
         if (
-            texto.includes("caro") ||
-            texto.includes("está caro") ||
-            texto.includes("ta caro")
+            texto.includes("landing page") ||
+            texto.includes("landingpage")
         ) {
 
-            return `Se o cliente disser que está caro, não tente dar desconto imediatamente.
+            return `Uma Landing Page pode ser uma ótima oferta para começar.
 
-Você pode responder:
+Mas eu não venderia apenas "uma página".
 
-"Entendo. Para eu conseguir te orientar melhor, o que exatamente fez você considerar o investimento alto?"
+Eu venderia o resultado:
 
-Assim você descobre se o problema realmente é preço ou se o cliente ainda não percebeu o valor da solução.
+"Uma página profissional criada para apresentar seu negócio e transformar visitantes em novos contatos."
 
-Depois disso, mostre o resultado que seu serviço pode gerar.`;
+Assim o cliente entende por que deveria comprar.`;
 
         }
 
 
+        /* Preço */
+
         if (
-            texto.includes("não tenho interesse") ||
+            texto.includes("preco") ||
+            texto.includes("quanto cobrar") ||
+            texto.includes("quanto custa")
+        ) {
+
+            return `Para definir seu preço, considere:
+
+• Complexidade
+• Prazo
+• Trabalho necessário
+• Revisões
+• Manutenção
+• Valor gerado para o cliente
+
+No começo, você pode trabalhar com uma oferta de entrada para conquistar os primeiros clientes e construir portfólio.`;
+
+        }
+
+
+        /* Caro */
+
+        if (
+            texto.includes("ta caro") ||
+            texto.includes("esta caro") ||
+            texto.includes("muito caro")
+        ) {
+
+            return `Não ofereça desconto imediatamente.
+
+Pergunte:
+
+"Entendo. O que exatamente fez você considerar o investimento alto?"
+
+Isso ajuda a descobrir se o problema é realmente preço ou se o cliente ainda não percebeu o valor.`;
+
+        }
+
+
+        /* Não interessado */
+
+        if (
             texto.includes("nao tenho interesse")
         ) {
 
@@ -374,103 +525,69 @@ Depois disso, mostre o resultado que seu serviço pode gerar.`;
 
 Você pode responder:
 
-"Tranquilo, sem problema! Só para eu entender melhor, hoje vocês já possuem alguma solução para essa necessidade ou simplesmente não é uma prioridade no momento?"
+"Tranquilo, sem problema! Só para eu entender: hoje vocês já possuem alguma solução para essa necessidade ou simplesmente não é uma prioridade?"
 
-Essa pergunta pode revelar uma oportunidade sem parecer insistente.`;
+Assim você mantém a conversa profissional.`;
 
         }
 
 
+        /* Não responde */
+
         if (
-            texto.includes("não responde") ||
-            texto.includes("nao responde")
+            texto.includes("nao responde") ||
+            texto.includes("não responde")
         ) {
 
-            return `Se o cliente não respondeu, não mande várias mensagens seguidas.
+            return `Faça apenas um follow-up depois de algum tempo.
 
-Faça um follow-up simples depois de algum tempo:
+Por exemplo:
 
 "Olá! Passando só para saber se conseguiu ver minha mensagem. Caso faça sentido para vocês, posso te explicar a ideia rapidamente."
 
-Se mesmo assim não houver resposta, siga para o próximo prospect.`;
+Se não houver resposta, siga para o próximo prospect.`;
 
         }
 
 
-        if (
-            texto.includes("landing page") ||
-            texto.includes("landingpage")
-        ) {
-
-            return `Uma Landing Page pode ser uma ótima oferta para começar porque é mais simples de explicar e entregar do que um projeto grande.
-
-Você pode vender a ideia assim:
-
-"Uma página criada especificamente para transformar visitantes em contatos e oportunidades para o seu negócio."
-
-Não venda apenas "uma página".
-
-Venda o objetivo dela: gerar mais contatos e oportunidades.`;
-
-        }
-
+        /* Estratégia */
 
         if (
-            texto.includes("preço") ||
-            texto.includes("quanto cobrar") ||
-            texto.includes("quanto custa")
-        ) {
-
-            return `Não defina seu preço olhando apenas para o tempo que você vai gastar.
-
-Considere:
-
-• Complexidade
-• Prazo
-• Número de páginas
-• Revisões
-• Manutenção
-• Valor para o cliente
-• Resultado esperado
-
-Uma Landing Page simples, por exemplo, pode ter um preço inicial acessível enquanto você conquista seus primeiros clientes e aumenta seu portfólio.`;
-
-        }
-
-
-        if (
-            texto.includes("estratégia") ||
-            texto.includes("estrategia")
+            texto.includes("estrategia") ||
+            texto.includes("como vender") ||
+            texto.includes("conseguir clientes")
         ) {
 
             return `Eu faria assim:
 
-1. Escolha um serviço simples.
-2. Encontre empresas que realmente precisam dele.
-3. Analise rapidamente cada negócio.
+1. Escolha uma oferta simples.
+2. Encontre bons prospects.
+3. Analise cada empresa.
 4. Personalize sua abordagem.
-5. Inicie uma conversa.
+5. Inicie a conversa.
 6. Descubra o problema.
-7. Apresente sua solução.
+7. Apresente a solução.
 8. Tente marcar uma ligação ou reunião.
 
-O objetivo não é mandar 100 mensagens genéricas.
+O objetivo não é simplesmente mandar muitas mensagens.
 
-É encontrar bons prospects e conversar com eles de forma inteligente.`;
+É conversar com os prospects certos.`;
 
         }
 
 
+        /* Oferta */
+
         if (
             texto.includes("oferta") ||
-            texto.includes("vender")
+            texto.includes("vender meu servico")
         ) {
 
-            return `Uma boa oferta precisa responder três coisas:
+            return `Uma boa oferta precisa deixar três coisas claras:
 
-1. Qual problema você resolve?
-2. Como você resolve?
-3. Qual benefício o cliente recebe?
+1. O problema.
+2. A solução.
+3. O benefício.
 
 Por exemplo:
 
@@ -483,48 +600,232 @@ Isso é muito mais forte do que simplesmente dizer:
         }
 
 
+        /* Ajuda */
+
         if (
-            texto.includes("oi") ||
-            texto.includes("olá") ||
-            texto.includes("ola") ||
-            texto.includes("bom dia") ||
-            texto.includes("boa tarde") ||
-            texto.includes("boa noite")
+            texto.includes("pode me ajudar") ||
+            texto.includes("o que voce faz") ||
+            texto.includes("o que você faz")
         ) {
 
-            return `Olá! 👋
+            return `Posso te ajudar com vendas e negócios.
 
-Estou pronto para te ajudar.
+Por exemplo:
 
-Pode me falar o que você precisa: estratégia de vendas, abordagem de clientes, preço, oferta, negociação ou qualquer outra coisa relacionada ao seu negócio.`;
+• Abordagem
+• Prospecção
+• Preço
+• Ofertas
+• Negociação
+• Objeções
+• Primeira venda
+• Estratégias comerciais
+
+Me conte o que está acontecendo e eu analiso com você.`;
 
         }
 
 
+        /* Resposta geral */
+
         return `Entendi.
 
-Vamos pensar nisso de forma estratégica.
+Quero analisar isso junto com você, em vez de simplesmente te mandar uma resposta pronta.
 
-Me conte um pouco mais sobre a situação ou sobre o que você está tentando conseguir.
+Me explica um pouco mais sobre a situação.
 
-Quanto mais contexto você me passar, melhor eu consigo te orientar.
-
-Estou aqui para pensar junto com você.`;
+Pode falar normalmente, como se estivesse conversando comigo.`;
 
     }
 
 
     /* =====================================================
-       FORMATAR TEXTO
+       MENSAGEM
        ===================================================== */
 
-    function formatarTexto(texto) {
+    function adicionarMensagem(
+        texto,
+        tipo
+    ) {
 
-        return texto
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\n/g, "<br>");
+        const elemento =
+            document.createElement(
+                "div"
+            );
+
+
+        elemento.className =
+            `hunter-message ${tipo}`;
+
+
+        if (tipo === "hunter") {
+
+            elemento.innerHTML = `
+
+                <div class="hunter-message-avatar">
+
+                    <img
+                        src="${logo}"
+                        alt="Hunter IA"
+                    >
+
+                </div>
+
+                <div class="hunter-message-content">
+
+                    ${formatar(texto)}
+
+                </div>
+
+            `;
+
+        } else {
+
+            elemento.innerHTML = `
+
+                <div class="hunter-message-content">
+
+                    ${formatar(texto)}
+
+                </div>
+
+            `;
+
+        }
+
+
+        messages.appendChild(
+            elemento
+        );
+
+
+        messages.scrollTo({
+
+            top:
+                messages.scrollHeight,
+
+            behavior:
+                "smooth"
+
+        });
+
+    }
+
+
+    /* =====================================================
+       DIGITANDO
+       ===================================================== */
+
+    function mostrarDigitando() {
+
+        const elemento =
+            document.createElement(
+                "div"
+            );
+
+
+        elemento.className =
+            "hunter-message hunter";
+
+
+        elemento.innerHTML = `
+
+            <div class="hunter-message-avatar">
+
+                <img
+                    src="${logo}"
+                    alt="Hunter IA"
+                >
+
+            </div>
+
+            <div class="hunter-message-content hunter-typing">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+        `;
+
+
+        messages.appendChild(
+            elemento
+        );
+
+
+        messages.scrollTop =
+            messages.scrollHeight;
+
+
+        return elemento;
+
+    }
+
+
+    function removerDigitando(elemento) {
+
+        elemento?.remove();
+
+    }
+
+
+    /* =====================================================
+       INPUT
+       ===================================================== */
+
+    function ajustarInput() {
+
+        input.style.height =
+            "auto";
+
+
+        input.style.height =
+            Math.min(
+                input.scrollHeight,
+                140
+            ) + "px";
+
+    }
+
+
+    /* =====================================================
+       SEGURANÇA
+       ===================================================== */
+
+    function formatar(texto) {
+
+        return String(texto)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /\n/g,
+                "<br>"
+            );
+
+    }
+
+
+    function esperar(ms) {
+
+        return new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    ms
+                )
+        );
 
     }
 

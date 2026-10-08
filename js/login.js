@@ -1,5 +1,6 @@
 /* =========================================================
    HUNTER IA — LOGIN.JS
+   Login simples + armazenamento do usuário
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -17,186 +18,219 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("login-message");
 
 
-    // Se o formulário não existir, não faz nada
     if (!loginForm) return;
 
 
     /* =====================================================
-       CARREGAR USUÁRIO SALVO
+       VERIFICA SE JÁ ESTÁ LOGADO
        ===================================================== */
 
-    const savedUser =
-        localStorage.getItem("hunter_user");
+    const alreadyLogged =
+        localStorage.getItem("hunter_logged_in") === "true";
 
 
-    if (savedUser && nameInput) {
+    if (alreadyLogged) {
 
-        try {
+        const loginScreen =
+            document.getElementById("login-screen");
 
-            const user =
-                JSON.parse(savedUser);
+        const app =
+            document.getElementById("app");
 
-            if (user.name) {
-                nameInput.value = user.name;
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Erro ao carregar usuário:",
-                error
-            );
-
+        if (loginScreen) {
+            loginScreen.classList.add("hidden");
         }
+
+        if (app) {
+            app.classList.remove("hidden");
+        }
+
     }
 
 
     /* =====================================================
-       LOGIN
+       SUBMIT DO LOGIN
        ===================================================== */
 
-    loginForm.addEventListener(
-        "submit",
-        event => {
+    loginForm.addEventListener("submit", event => {
 
-            event.preventDefault();
+        event.preventDefault();
 
 
-            const name =
-                nameInput
-                    ? nameInput.value.trim()
-                    : "";
+        const name =
+            nameInput
+                ? nameInput.value.trim()
+                : "";
+
+        const password =
+            passwordInput
+                ? passwordInput.value.trim()
+                : "";
 
 
-            const password =
-                passwordInput
-                    ? passwordInput.value.trim()
-                    : "";
+        /* =================================================
+           VALIDAÇÃO DO NOME
+           ================================================= */
 
-
-            clearMessage();
-
-
-            /* -----------------------------
-               VALIDAÇÕES
-               ----------------------------- */
-
-            if (!name) {
-
-                showMessage(
-                    "Digite seu nome para continuar.",
-                    "error"
-                );
-
-                if (nameInput) {
-                    nameInput.focus();
-                }
-
-                return;
-            }
-
-
-            if (!password) {
-
-                showMessage(
-                    "Digite sua senha para continuar.",
-                    "error"
-                );
-
-                if (passwordInput) {
-                    passwordInput.focus();
-                }
-
-                return;
-            }
-
-
-            /* -----------------------------
-               CRIAR USUÁRIO
-               ----------------------------- */
-
-            const user = {
-
-                name: name,
-
-                role: "Vendedor",
-
-                description:
-                    "Profissional de vendas utilizando o Hunter IA."
-
-            };
-
-
-            localStorage.setItem(
-                "hunter_user",
-                JSON.stringify(user)
-            );
-
-
-            localStorage.setItem(
-                "hunter_logged_in",
-                "true"
-            );
-
+        if (!name) {
 
             showMessage(
-                "Login realizado! Entrando...",
-                "success"
+                "Digite seu nome para continuar."
             );
 
+            if (nameInput) {
+                nameInput.focus();
+            }
 
-            /* -----------------------------
-               ENTRAR NO APP
-               ----------------------------- */
+            return;
+        }
 
-            setTimeout(() => {
 
-                if (
-                    window.HunterApp &&
-                    typeof window.HunterApp.showApp ===
-                    "function"
-                ) {
+        /* =================================================
+           VALIDAÇÃO DA SENHA
+           ================================================= */
 
-                    window.HunterApp.showApp();
+        if (!password) {
 
-                } else {
+            showMessage(
+                "Digite sua senha para continuar."
+            );
 
-                    console.error(
-                        "HunterApp não foi carregado."
-                    );
+            if (passwordInput) {
+                passwordInput.focus();
+            }
 
-                }
+            return;
+        }
 
-            }, 500);
+
+        if (password.length < 4) {
+
+            showMessage(
+                "A senha precisa ter pelo menos 4 caracteres."
+            );
+
+            if (passwordInput) {
+                passwordInput.focus();
+            }
+
+            return;
+        }
+
+
+        /* =================================================
+           SALVA USUÁRIO
+           ================================================= */
+
+        const user = {
+
+            name: name,
+
+            createdAt:
+                new Date().toISOString()
+
+        };
+
+
+        localStorage.setItem(
+            "hunter_user",
+            JSON.stringify(user)
+        );
+
+
+        localStorage.setItem(
+            "hunter_logged_in",
+            "true"
+        );
+
+
+        /* =================================================
+           FEEDBACK
+           ================================================= */
+
+        if (loginMessage) {
+
+            loginMessage.textContent =
+                "Entrando no Hunter IA...";
+
+            loginMessage.style.color =
+                "#22c55e";
 
         }
-    );
+
+
+        /* =================================================
+           ENTRA NO APP
+           ================================================= */
+
+        setTimeout(() => {
+
+            if (
+                window.HunterApp &&
+                typeof window.HunterApp.showApp === "function"
+            ) {
+
+                window.HunterApp.showApp();
+
+            } else {
+
+                const loginScreen =
+                    document.getElementById(
+                        "login-screen"
+                    );
+
+                const app =
+                    document.getElementById("app");
+
+
+                if (loginScreen) {
+                    loginScreen.classList.add("hidden");
+                }
+
+                if (app) {
+                    app.classList.remove("hidden");
+                }
+
+            }
+
+        }, 400);
+
+    });
 
 
     /* =====================================================
-       MENSAGENS
+       MENSAGEM
        ===================================================== */
 
-    function showMessage(message, type) {
+    function showMessage(message) {
 
         if (!loginMessage) return;
 
         loginMessage.textContent =
             message;
 
-        loginMessage.className =
-            "login-message " + type;
+        loginMessage.style.color =
+            "#ef4444";
+
     }
 
 
-    function clearMessage() {
+    /* =====================================================
+       ENTER NOS CAMPOS
+       ===================================================== */
 
-        if (!loginMessage) return;
+    [nameInput, passwordInput]
+        .filter(Boolean)
+        .forEach(input => {
 
-        loginMessage.textContent = "";
+            input.addEventListener("input", () => {
 
-        loginMessage.className =
-            "login-message";
-    }
+                if (loginMessage) {
+                    loginMessage.textContent = "";
+                }
+
+            });
+
+        });
 
 });

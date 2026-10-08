@@ -1,6 +1,6 @@
 /* =========================================================
    HUNTER IA — APP.JS
-   Navegação + Menu Mobile + Usuário
+   Navegação + Menu Mobile
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,14 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("sidebar-overlay");
-    const mobileMenuButton =
-        document.getElementById("mobile-menu-button");
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
 
-    const navItems =
-        document.querySelectorAll("[data-page]");
+    const navItems = document.querySelectorAll("[data-page]");
+
 
     /* =====================================================
-       INICIALIZAÇÃO
+       SPLASH
        ===================================================== */
 
     setTimeout(() => {
@@ -30,10 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 splash.style.display = "none";
             }, 500);
+
         }
+
 
         const loggedIn =
             localStorage.getItem("hunter_logged_in") === "true";
+
 
         if (loggedIn) {
 
@@ -46,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             loadUser();
+
             navigateTo("dashboard");
 
         } else {
@@ -57,13 +60,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (loginScreen) {
                 loginScreen.classList.remove("hidden");
             }
+
         }
 
     }, 1800);
 
 
     /* =====================================================
-       NAVEGAÇÃO DO MENU
+       NAVEGAÇÃO
        ===================================================== */
 
     navItems.forEach(item => {
@@ -77,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!page) return;
 
             navigateTo(page);
+
             closeMobileMenu();
 
         });
@@ -85,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       CARDS DO DASHBOARD
+       CARDS
        ===================================================== */
 
     document.querySelectorAll(".tool-card").forEach(card => {
@@ -135,15 +140,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("keydown", event => {
 
         if (event.key === "Escape") {
+
             closeMobileMenu();
+
         }
 
     });
 
-
-    /* =====================================================
-       ABRIR MENU
-       ===================================================== */
 
     function openMobileMenu() {
 
@@ -156,12 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         document.body.style.overflow = "hidden";
+
     }
 
-
-    /* =====================================================
-       FECHAR MENU
-       ===================================================== */
 
     function closeMobileMenu() {
 
@@ -174,12 +174,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         document.body.style.overflow = "";
+
     }
 
-
-    /* =====================================================
-       ALTERNAR MENU
-       ===================================================== */
 
     function toggleMobileMenu() {
 
@@ -189,21 +186,27 @@ document.addEventListener("DOMContentLoaded", () => {
             sidebar.classList.contains("mobile-open");
 
         if (isOpen) {
+
             closeMobileMenu();
+
         } else {
+
             openMobileMenu();
+
         }
+
     }
 
 
     /* =====================================================
-       NAVEGAR ENTRE PÁGINAS
+       NAVEGAR PARA UMA PÁGINA
        ===================================================== */
 
     function navigateTo(pageName) {
 
         const pages =
             document.querySelectorAll(".page");
+
 
         pages.forEach(page => {
 
@@ -214,7 +217,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const targetPage =
-            document.getElementById(`page-${pageName}`);
+            document.getElementById(
+                `page-${pageName}`
+            );
+
 
         if (!targetPage) return;
 
@@ -223,59 +229,42 @@ document.addEventListener("DOMContentLoaded", () => {
         targetPage.classList.add("active-page");
 
 
-        /* Atualiza menu */
+        document.querySelectorAll(".nav-item").forEach(item => {
 
-        document
-            .querySelectorAll(".nav-item")
-            .forEach(item => {
+            item.classList.remove("active");
 
-                item.classList.remove("active");
+            if (item.dataset.page === pageName) {
 
-                if (item.dataset.page === pageName) {
-                    item.classList.add("active");
-                }
+                item.classList.add("active");
 
-            });
+            }
 
+        });
 
-        /* Atualiza breadcrumb */
 
         const breadcrumb =
             document.getElementById("page-breadcrumb");
+
 
         if (breadcrumb) {
 
             const names = {
 
-                dashboard:
-                    "Dashboard",
-
-                hunter:
-                    "Hunter IA",
-
-                vendedor:
-                    "Vendedor IA",
-
-                calculadora:
-                    "Calculadora",
-
-                ofertas:
-                    "Gerador de Ofertas",
-
-                treinador:
-                    "Treinador de Vendas",
-
-                perfil:
-                    "Meu Perfil"
+                dashboard: "Dashboard",
+                hunter: "Hunter IA",
+                vendedor: "Vendedor IA",
+                calculadora: "Calculadora de Preços",
+                ofertas: "Gerador de Ofertas",
+                treinador: "Treinador de Vendas",
+                perfil: "Meu Perfil"
 
             };
 
             breadcrumb.textContent =
                 names[pageName] || "Hunter IA";
+
         }
 
-
-        /* Volta para o topo */
 
         window.scrollTo({
             top: 0,
@@ -319,6 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "dashboard-user-name"
             );
 
+
         if (dashboardName) {
 
             dashboardName.textContent =
@@ -334,6 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "topbar-user-name"
             );
 
+
         if (topbarName) {
 
             topbarName.textContent =
@@ -342,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* Inicial */
+        /* Avatar */
 
         const initial =
             name
@@ -351,12 +342,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 .toUpperCase() || "V";
 
 
-        /* Avatar topbar */
-
         const avatar =
             document.getElementById(
                 "profile-avatar"
             );
+
 
         if (avatar) {
 
@@ -366,12 +356,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* Avatar grande */
-
         const largeAvatar =
             document.getElementById(
                 "profile-large-avatar"
             );
+
 
         if (largeAvatar) {
 
@@ -381,12 +370,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* Nome do perfil */
+        /* Perfil */
 
         const profileDisplay =
             document.getElementById(
                 "profile-display-name"
             );
+
 
         if (profileDisplay) {
 
@@ -396,12 +386,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* Input do perfil */
-
         const profileName =
             document.getElementById(
                 "profile-name"
             );
+
 
         if (
             profileName &&
@@ -417,7 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       API PÚBLICA DO HUNTER IA
+       API PÚBLICA
        ===================================================== */
 
     window.HunterApp = {
@@ -427,14 +416,25 @@ document.addEventListener("DOMContentLoaded", () => {
         showApp: () => {
 
             if (loginScreen) {
-                loginScreen.classList.add("hidden");
+
+                loginScreen.classList.add(
+                    "hidden"
+                );
+
             }
+
 
             if (app) {
-                app.classList.remove("hidden");
+
+                app.classList.remove(
+                    "hidden"
+                );
+
             }
 
+
             loadUser();
+
             navigateTo("dashboard");
 
         },

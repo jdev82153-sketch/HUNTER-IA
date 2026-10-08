@@ -1,333 +1,306 @@
+/* =========================================================
+   HUNTER IA — TREINADOR.JS
+   Treinador de vendas
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("treinador-content");
 
-    if (!container) return;
+    const resposta =
+        document.getElementById("treinador-resposta");
 
-    container.innerHTML = `
-        <div class="tool-panel">
-            <div class="tool-intro">
-                <span class="tool-badge">TREINADOR DE VENDAS</span>
+    const botao =
+        document.getElementById("treinador-enviar");
 
-                <h2>Treine sua abordagem antes de falar com o cliente.</h2>
+    const resultado =
+        document.getElementById("treinador-result");
 
-                <p>
-                    Simule uma conversa de vendas, responda ao cliente
-                    e descubra onde você pode melhorar.
-                </p>
-            </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="treino-produto">
-                        O que você está vendendo?
-                    </label>
-
-                    <input
-                        type="text"
-                        id="treino-produto"
-                        placeholder="Ex: Landing Page"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="treino-cliente">
-                        Tipo de cliente
-                    </label>
-
-                    <input
-                        type="text"
-                        id="treino-cliente"
-                        placeholder="Ex: Dono de clínica"
-                    >
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="treino-objetivo">
-                    Qual seu objetivo?
-                </label>
-
-                <select id="treino-objetivo">
-                    <option value="primeiro-contato">
-                        Fazer primeiro contato
-                    </option>
-
-                    <option value="apresentacao">
-                        Apresentar a oferta
-                    </option>
-
-                    <option value="objecao">
-                        Contornar uma objeção
-                    </option>
-
-                    <option value="fechamento">
-                        Tentar fechar a venda
-                    </option>
-                </select>
-            </div>
-
-            <button id="iniciar-treino" class="primary-button">
-                Iniciar treinamento
-            </button>
-
-            <div id="treino-area" class="hidden"></div>
-        </div>
-    `;
-
-    const produto = document.getElementById("treino-produto");
-    const cliente = document.getElementById("treino-cliente");
-    const objetivo = document.getElementById("treino-objetivo");
-
-    const iniciarButton = document.getElementById("iniciar-treino");
-    const area = document.getElementById("treino-area");
-
-    let mensagens = [];
-    let etapa = 0;
-
-    iniciarButton.addEventListener("click", iniciarTreino);
-
-    function iniciarTreino() {
-        const produtoTexto = produto.value.trim() || "seu serviço";
-        const clienteTexto = cliente.value.trim() || "cliente";
-
-        mensagens = [];
-        etapa = 0;
-
-        area.className = "training-area";
-
-        area.innerHTML = `
-            <div class="training-header">
-                <span class="tool-badge">
-                    SIMULAÇÃO ATIVA
-                </span>
-
-                <h3>
-                    Você está conversando com um ${clienteTexto}.
-                </h3>
-
-                <p>
-                    Venda: <strong>${produtoTexto}</strong>
-                </p>
-            </div>
-
-            <div id="chat-messages" class="chat-messages">
-                <div class="chat-message client">
-                    <span class="chat-label">CLIENTE</span>
-
-                    <p>
-                        Olá! Pode me explicar melhor o que você está
-                        oferecendo?
-                    </p>
-                </div>
-            </div>
-
-            <div class="training-input">
-                <textarea
-                    id="resposta-vendedor"
-                    rows="4"
-                    placeholder="Digite como você responderia ao cliente..."
-                ></textarea>
-
-                <button
-                    id="enviar-resposta"
-                    class="primary-button"
-                >
-                    Enviar resposta
-                </button>
-            </div>
-
-            <div id="treino-feedback"></div>
-        `;
-
-        const enviar = document.getElementById("enviar-resposta");
-
-        enviar.addEventListener("click", avaliarResposta);
+    if (
+        !resposta ||
+        !botao ||
+        !resultado
+    ) {
+        return;
     }
 
-    function avaliarResposta() {
-        const respostaInput =
-            document.getElementById("resposta-vendedor");
 
-        const resposta = respostaInput.value.trim();
+    /* =====================================================
+       ANALISAR RESPOSTA
+       ===================================================== */
 
-        if (!resposta) {
-            respostaInput.focus();
+    botao.addEventListener("click", () => {
+
+        const texto =
+            resposta.value.trim();
+
+
+        if (!texto) {
+
+            mostrarResultado(
+                "Digite a resposta que o cliente deu para começar o treinamento."
+            );
+
+            resposta.focus();
+
             return;
         }
 
-        mensagens.push(resposta);
 
-        adicionarMensagem("vendedor", resposta);
+        const analise =
+            analisarResposta(texto);
 
-        respostaInput.value = "";
 
-        etapa++;
+        mostrarResultado(analise);
 
-        setTimeout(() => {
-            gerarRespostaCliente();
-        }, 600);
-    }
+    });
 
-    function adicionarMensagem(tipo, texto) {
-        const chat = document.getElementById("chat-messages");
 
-        if (!chat) return;
+    /* =====================================================
+       ENTER
+       ===================================================== */
 
-        const mensagem = document.createElement("div");
+    resposta.addEventListener("keydown", event => {
 
-        mensagem.className = `chat-message ${tipo}`;
+        if (
+            event.key === "Enter" &&
+            (event.ctrlKey || event.metaKey)
+        ) {
 
-        mensagem.innerHTML = `
-            <span class="chat-label">
-                ${tipo === "vendedor" ? "VOCÊ" : "CLIENTE"}
-            </span>
+            event.preventDefault();
 
-            <p>${escapeHTML(texto)}</p>
-        `;
+            botao.click();
 
-        chat.appendChild(mensagem);
+        }
 
-        chat.scrollTop = chat.scrollHeight;
-    }
+    });
 
-    function gerarRespostaCliente() {
-        const objetivoAtual = objetivo.value;
 
-        let resposta = "";
+    /* =====================================================
+       ANALISAR
+       ===================================================== */
 
-        if (etapa === 1) {
-            resposta =
-                "Entendi. Mas por que eu deveria contratar isso em vez de fazer de outra forma?";
-        } else if (etapa === 2) {
-            resposta =
-                "Entendi seu ponto. Mas ainda estou preocupado com o preço.";
-        } else if (etapa === 3) {
-            resposta =
-                "Certo. Preciso pensar um pouco antes de tomar uma decisão.";
+    function analisarResposta(texto) {
+
+        const mensagem =
+            texto.toLowerCase();
+
+
+        let nivel =
+            "Boa";
+
+        let pontos = [];
+
+        let melhorias = [];
+
+
+        /* -------------------------------------------------
+           IDENTIFICAÇÃO DE PONTOS
+           ------------------------------------------------- */
+
+        if (
+            mensagem.includes("entendo") ||
+            mensagem.includes("entendi") ||
+            mensagem.includes("claro")
+        ) {
+
+            pontos.push(
+                "Você demonstrou atenção ao que o cliente falou."
+            );
+
         } else {
-            finalizarTreino();
-            return;
+
+            melhorias.push(
+                "Comece demonstrando que entendeu o que o cliente disse."
+            );
+
         }
 
-        if (objetivoAtual === "fechamento" && etapa === 2) {
-            resposta =
-                "Gostei da proposta, mas você consegue melhorar um pouco esse valor?";
+
+        if (
+            mensagem.includes("porque") ||
+            mensagem.includes("por que") ||
+            mensagem.includes("problema") ||
+            mensagem.includes("necessidade")
+        ) {
+
+            pontos.push(
+                "Você tentou entender melhor a necessidade do cliente."
+            );
+
+        } else {
+
+            melhorias.push(
+                "Faça perguntas para descobrir o verdadeiro problema do cliente."
+            );
+
         }
 
-        adicionarMensagem("cliente", resposta);
 
-        if (etapa >= 3) {
-            setTimeout(finalizarTreino, 1000);
+        if (
+            mensagem.includes("posso") ||
+            mensagem.includes("podemos") ||
+            mensagem.includes("vamos")
+        ) {
+
+            pontos.push(
+                "Você apresentou um próximo passo para a conversa."
+            );
+
+        } else {
+
+            melhorias.push(
+                "Tente conduzir o cliente para um próximo passo."
+            );
+
         }
+
+
+        if (
+            mensagem.includes("site") ||
+            mensagem.includes("serviço") ||
+            mensagem.includes("solução") ||
+            mensagem.includes("produto")
+        ) {
+
+            pontos.push(
+                "Você conectou a conversa com sua solução."
+            );
+
+        } else {
+
+            melhorias.push(
+                "Mostre como sua solução pode ajudar especificamente o cliente."
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           DETECTAR ABORDAGEM MUITO AGRESSIVA
+           ------------------------------------------------- */
+
+        if (
+            mensagem.includes("compre agora") ||
+            mensagem.includes("feche agora") ||
+            mensagem.includes("última chance") ||
+            mensagem.includes("promoção acaba")
+        ) {
+
+            nivel =
+                "Precisa melhorar";
+
+            melhorias.push(
+                "Evite pressionar o cliente logo no início da conversa."
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           MONTAR RESULTADO
+           ------------------------------------------------- */
+
+        let resultadoFinal =
+`TREINAMENTO DE VENDAS — HUNTER IA
+
+Mensagem analisada:
+
+"${texto}"
+
+━━━━━━━━━━━━━━━━━━━━
+
+AVALIAÇÃO
+
+Nível: ${nivel}
+
+`;
+
+
+        if (pontos.length > 0) {
+
+            resultadoFinal +=
+`
+✅ O QUE VOCÊ FEZ BEM
+
+`;
+
+            pontos.forEach(ponto => {
+
+                resultadoFinal +=
+                    `• ${ponto}\n`;
+
+            });
+
+        }
+
+
+        if (melhorias.length > 0) {
+
+            resultadoFinal +=
+`
+━━━━━━━━━━━━━━━━━━━━
+
+⚠️ O QUE PODE MELHORAR
+
+`;
+
+            melhorias.forEach(melhoria => {
+
+                resultadoFinal +=
+                    `• ${melhoria}\n`;
+
+            });
+
+        }
+
+
+        resultadoFinal +=
+`
+━━━━━━━━━━━━━━━━━━━━
+
+🎯 COMO O HUNTER RESPONDERIA
+
+Uma resposta mais estratégica seria:
+
+"Entendi. Para eu conseguir te orientar da melhor forma, posso te fazer algumas perguntas rápidas sobre o seu negócio?
+
+Assim consigo entender exatamente o que você precisa e verificar se existe uma solução que realmente faça sentido para você."
+
+━━━━━━━━━━━━━━━━━━━━
+
+💡 DICA DO HUNTER IA
+
+Uma boa venda não acontece quando você fala mais.
+
+Ela acontece quando você entende melhor o cliente.
+
+Faça perguntas.
+Escute.
+Identifique o problema.
+Mostre a solução.
+E conduza para o próximo passo.`;
+
+        return resultadoFinal;
+
     }
 
-    function finalizarTreino() {
-        const feedback = document.getElementById("treino-feedback");
 
-        if (!feedback) return;
+    /* =====================================================
+       RESULTADO
+       ===================================================== */
 
-        const score = calcularPontuacao();
+    function mostrarResultado(texto) {
 
-        feedback.className = "training-feedback";
+        resultado.classList.remove("hidden");
 
-        feedback.innerHTML = `
-            <div class="score-card">
-                <span class="tool-badge">
-                    AVALIAÇÃO FINAL
-                </span>
+        resultado.textContent =
+            texto;
 
-                <div class="score-number">
-                    ${score}/100
-                </div>
-
-                <h3>
-                    ${getResultado(score)}
-                </h3>
-
-                <div class="feedback-section">
-                    <h4>O que você fez bem</h4>
-
-                    <p>
-                        Você manteve a conversa ativa e respondeu
-                        diretamente ao cliente.
-                    </p>
-                </div>
-
-                <div class="feedback-section">
-                    <h4>O que pode melhorar</h4>
-
-                    <p>
-                        Faça mais perguntas antes de tentar convencer.
-                        Quanto melhor você entender o problema,
-                        mais fácil será apresentar sua solução.
-                    </p>
-                </div>
-
-                <button
-                    id="novo-treino"
-                    class="secondary-button"
-                >
-                    Fazer outro treinamento
-                </button>
-            </div>
-        `;
-
-        document
-            .getElementById("novo-treino")
-            .addEventListener("click", iniciarTreino);
-    }
-
-    function calcularPontuacao() {
-        if (mensagens.length === 0) return 0;
-
-        let pontos = 50;
-
-        mensagens.forEach((mensagem) => {
-            const texto = mensagem.toLowerCase();
-
-            if (texto.length > 40) pontos += 8;
-
-            if (
-                texto.includes("?") ||
-                texto.includes("como") ||
-                texto.includes("qual") ||
-                texto.includes("por que")
-            ) {
-                pontos += 8;
-            }
-
-            if (
-                texto.includes("resultado") ||
-                texto.includes("benefício") ||
-                texto.includes("problema") ||
-                texto.includes("solução")
-            ) {
-                pontos += 7;
-            }
+        resultado.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
         });
 
-        return Math.min(pontos, 100);
     }
 
-    function getResultado(score) {
-        if (score >= 90) {
-            return "Excelente vendedor!";
-        }
-
-        if (score >= 75) {
-            return "Muito bom! Está no caminho certo.";
-        }
-
-        if (score >= 60) {
-            return "Bom começo. Dá para melhorar.";
-        }
-
-        return "Continue treinando. Você vai evoluir.";
-    }
-
-    function escapeHTML(text) {
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
-    }
 });
